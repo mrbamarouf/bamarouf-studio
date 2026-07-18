@@ -8,8 +8,14 @@
 }
 
 @keyframes mIntroDoorOpen {
-  0%, 42% { transform: perspective(1100px) rotateY(0deg) scaleX(1); }
-  100% { transform: perspective(1100px) rotateY(-80deg) scaleX(0.14); }
+  0%, 18% { transform: perspective(1100px) rotateY(0deg) scaleX(1); }
+  100% { transform: perspective(1100px) rotateY(-82deg) scaleX(0.11); }
+}
+
+@keyframes mIntroLockRelease {
+  0%, 12% { opacity: 0; transform: translate3d(8px, 0, 0) scaleX(0.3); }
+  30%, 68% { opacity: 0.8; transform: translate3d(0, 0, 0) scaleX(1); }
+  100% { opacity: 0; transform: translate3d(-14px, 0, 0) scaleX(0.18); }
 }
 
 @keyframes mIntroEdgeAwake {
@@ -20,17 +26,39 @@
 
 @keyframes mIntroFloorTravel {
   0%, 36% { opacity: 0; transform: translate3d(-50%, 18px, 0) scaleY(0.22); }
-  72%, 100% { opacity: 0.78; transform: translate3d(-50%, 0, 0) scaleY(1); }
+  72%, 100% { opacity: 0.62; transform: translate3d(-50%, 0, 0) scaleY(1); }
 }
 
-@keyframes mIntroIdentityReveal {
-  0%, 48% { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.965); }
-  76%, 100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+@keyframes mIntroEmblemReliefReveal {
+  0%, 24% { opacity: 0; transform: translate3d(0, 7px, 0); }
+  100% { opacity: 0.76; transform: translate3d(0, 2px, 0); }
+}
+
+@keyframes mIntroEmblemIvoryReveal {
+  0%, 14% { opacity: 0; clip-path: inset(0 100% 0 0); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes mIntroEmblemGoldReveal {
+  0%, 18% { opacity: 0; clip-path: inset(0 0 100% 0); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes mIntroEmblemRakingLight {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  20% { opacity: 0.72; }
+  78% { opacity: 0.5; }
+  100% { opacity: 0; transform: translate3d(1900px, 0, 0); }
+}
+
+@keyframes mIntroEmblemSettle {
+  0%, 74% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(0, -3px, 0) scale(0.985); }
 }
 
 @keyframes mIntroCameraPass {
-  0%, 80% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.14); opacity: 0; }
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.16); opacity: 0; }
 }
 
 @keyframes mPortalLightBreathe {
@@ -193,8 +221,8 @@
     z-index: 1;
     opacity: 0;
     animation:
-      mIntroSceneReveal 1.5s 0.55s var(--m-ease) forwards,
-      mIntroCameraPass 1.25s 5.55s var(--m-door-ease) forwards;
+      mIntroSceneReveal 1.65s 0.4s var(--m-ease) forwards,
+      mIntroCameraPass 1.4s 6.35s var(--m-door-ease) forwards;
   }
 
   .m-intro-image {
@@ -225,9 +253,11 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 50% 58%, rgba(222, 169, 100, 0.19), transparent 44%),
-      #070605;
-    box-shadow: inset 0 0 36px rgba(221, 163, 92, 0.2);
+      linear-gradient(101deg, transparent 0 44%, rgba(213, 160, 95, 0.08) 53%, transparent 64%),
+      linear-gradient(180deg, #080706 0%, #0d0a07 64%, #171008 100%);
+    box-shadow:
+      inset 18px 0 28px rgba(0, 0, 0, 0.7),
+      inset -10px 0 22px rgba(166, 111, 56, 0.07);
   }
 
   .m-intro-door {
@@ -236,21 +266,37 @@
     inset: 0;
     transform-origin: left center;
     background:
-      linear-gradient(90deg, #100e0b 0%, #1a1510 44%, #0b0907 100%);
-    box-shadow: 14px 0 28px rgba(0, 0, 0, 0.72);
-    animation: mIntroDoorOpen 2.35s 1.55s var(--m-door-ease) forwards;
+      linear-gradient(101deg, transparent 0 48%, rgba(190, 132, 70, 0.075) 51%, transparent 55%),
+      linear-gradient(90deg, #100e0b 0%, #19140f 44%, #0b0907 100%);
+    box-shadow:
+      12px 0 22px rgba(0, 0, 0, 0.76),
+      inset -1px 0 rgba(205, 151, 89, 0.2);
+    animation: mIntroDoorOpen 2.55s 1.65s var(--m-door-ease) forwards;
+  }
+
+  .m-intro-lock {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: -1px;
+    width: 28px;
+    height: 1px;
+    transform-origin: right center;
+    background: #c49359;
+    box-shadow: -7px 0 0 rgba(232, 190, 130, 0.18);
+    opacity: 0;
+    animation: mIntroLockRelease 1.35s 0.98s var(--m-ease) forwards;
   }
 
   .m-intro-edge {
     position: absolute;
     z-index: 5;
     inset: -1.5%;
-    border: 1px solid rgba(236, 184, 108, 0.8);
+    border: 1px solid rgba(224, 174, 105, 0.72);
     box-shadow:
-      inset 0 0 14px rgba(226, 164, 85, 0.52),
-      0 0 18px rgba(213, 144, 65, 0.28);
+      inset 1px 0 rgba(245, 211, 158, 0.34),
+      inset -2px 0 rgba(145, 91, 42, 0.18);
     opacity: 0;
-    animation: mIntroEdgeAwake 2.65s 0.95s ease-out forwards;
+    animation: mIntroEdgeAwake 2.8s 0.85s ease-out forwards;
   }
 
   .m-intro-floor {
@@ -261,37 +307,53 @@
     width: 140%;
     height: 42%;
     transform-origin: top center;
-    background: linear-gradient(180deg, rgba(224, 167, 96, 0.44), transparent 78%);
+    background: linear-gradient(180deg, rgba(215, 158, 92, 0.34), rgba(173, 111, 55, 0.11) 39%, transparent 80%);
     clip-path: polygon(27% 0, 73% 0, 100% 100%, 0 100%);
     opacity: 0;
-    animation: mIntroFloorTravel 2.4s 1.75s var(--m-ease) forwards;
+    animation: mIntroFloorTravel 2.55s 1.95s var(--m-ease) forwards;
   }
 
-  .m-intro-logo-light {
+  .m-intro-emblem-stage {
     position: absolute;
-    z-index: 3;
-    inset: 5% 7% 7%;
+    z-index: 2;
+    inset: 7% 10% 8%;
     display: grid;
     place-items: center;
-    opacity: 0;
-    animation: mIntroIdentityReveal 4.25s 0.65s var(--m-ease) forwards;
+    animation: mIntroEmblemSettle 1.35s 6.25s var(--m-ease) forwards;
   }
 
-  .m-intro-logo-light::before {
-    content: "";
-    position: absolute;
-    width: 130%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(216, 163, 96, 0.2), rgba(216, 163, 96, 0.06) 40%, transparent 72%);
-  }
-
-  .m-intro-logo {
-    position: relative;
-    width: min(64vw, 286px);
+  .m-intro-emblem {
+    display: block;
+    width: min(47vw, 198px);
     height: auto;
-    object-fit: contain;
-    transform: translateY(2%);
+    overflow: visible;
+    shape-rendering: geometricPrecision;
+  }
+
+  .m-intro-emblem-relief {
+    fill: #3a2819;
+    opacity: 0;
+    transform: translate3d(0, 7px, 0);
+    animation: mIntroEmblemReliefReveal 1.8s 3.05s var(--m-ease) forwards;
+  }
+
+  .m-intro-emblem-ivory {
+    fill: url("#mobile-intro-ivory-material");
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    animation: mIntroEmblemIvoryReveal 1.75s 3.42s var(--m-ease) forwards;
+  }
+
+  .m-intro-emblem-gold {
+    fill: url("#mobile-intro-gold-material");
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    animation: mIntroEmblemGoldReveal 1.85s 3.75s var(--m-ease) forwards;
+  }
+
+  .m-intro-emblem-raking-light {
+    opacity: 0;
+    animation: mIntroEmblemRakingLight 1.85s 4.15s cubic-bezier(0.42, 0, 0.28, 1) forwards;
   }
 
   .m-intro-skip {
@@ -1579,7 +1641,7 @@
     .m-outline-cta { min-height: 45px; }
     .m-hero-world-index { inset-block-start: 19%; gap: 9px; }
     .m-hero-world-index span { width: 27px; height: 27px; }
-    .m-intro-logo { width: min(55vw, 230px); }
+    .m-intro-emblem { width: min(45vw, 178px); }
     .m-intro-skip { inset-block-end: calc(11px + env(safe-area-inset-bottom)); }
 
     .m-portal {
@@ -1664,9 +1726,14 @@
   @media (prefers-reduced-motion: reduce) {
     .m-intro-architecture,
     .m-intro-door,
+    .m-intro-lock,
     .m-intro-edge,
     .m-intro-floor,
-    .m-intro-logo-light,
+    .m-intro-emblem-stage,
+    .m-intro-emblem-relief,
+    .m-intro-emblem-ivory,
+    .m-intro-emblem-gold,
+    .m-intro-emblem-raking-light,
     .m-portal-interior,
     .m-portal-reflection,
     .m-portal-material,
@@ -1675,19 +1742,39 @@
     }
 
     .m-intro-architecture,
-    .m-intro-edge,
-    .m-intro-logo-light {
+    .m-intro-edge {
       opacity: 1;
       transform: none;
     }
 
     .m-intro-door {
-      transform: perspective(1100px) rotateY(-80deg) scaleX(0.14);
+      transform: perspective(1100px) rotateY(-82deg) scaleX(0.11);
     }
 
     .m-intro-floor {
       opacity: 0.7;
       transform: translate3d(-50%, 0, 0) scaleY(1);
+    }
+
+    .m-intro-emblem-stage {
+      opacity: 1;
+      transform: none;
+    }
+
+    .m-intro-emblem-relief {
+      opacity: 0.76;
+      transform: translate3d(0, 2px, 0);
+    }
+
+    .m-intro-emblem-ivory,
+    .m-intro-emblem-gold {
+      opacity: 1;
+      clip-path: inset(0);
+    }
+
+    .m-intro-lock,
+    .m-intro-emblem-raking-light {
+      opacity: 0;
     }
 
     .m-portal-camera,

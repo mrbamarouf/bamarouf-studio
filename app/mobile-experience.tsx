@@ -15,6 +15,7 @@ import {
   mobileDestinations,
   type MobileDestination,
 } from "./mobile-content";
+import { MobileIntroEmblem } from "./mobile-intro-emblem";
 
 type SetLanguage = (language: Language) => void;
 type EnterMobileDestination = (
@@ -50,7 +51,7 @@ function MobileIntro({
 
     document.body.classList.add("mobile-intro-open");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reducedMotion ? 1150 : 6800);
+    const timer = window.setTimeout(onComplete, reducedMotion ? 1150 : 7900);
 
     return () => {
       window.clearTimeout(timer);
@@ -67,18 +68,12 @@ function MobileIntro({
         <div className="m-intro-image" />
         <div className="m-intro-frame">
           <div className="m-intro-interior" />
-          <div className="m-intro-logo-light">
-            <Image
-              className="m-intro-logo"
-              src="/brand/logo-intro-identity.png"
-              alt=""
-              width={1188}
-              height={1572}
-              priority
-              unoptimized
-            />
+          <div className="m-intro-emblem-stage">
+            <MobileIntroEmblem />
           </div>
-          <div className="m-intro-door" />
+          <div className="m-intro-door">
+            <span className="m-intro-lock" />
+          </div>
           <div className="m-intro-edge" />
           <div className="m-intro-floor" />
         </div>
