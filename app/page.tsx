@@ -51,7 +51,7 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
         <div className="intro-nightfall" />
         <div className="intro-monument">
           <div className="intro-sanctum">
-            <Image src="/brand/logo-full.png" alt="" width={792} height={1048} />
+            <Image src="/brand/logo-full.png" alt="" width={792} height={1048} priority />
           </div>
           <div className="intro-door-leaf" />
           <div className="intro-edge-light" />
@@ -100,17 +100,32 @@ function Hero({ language, onEnter }: { language: Language; onEnter: EnterDestina
     event.currentTarget.style.setProperty("--pointer-y", y.toFixed(3));
   };
 
+  const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
+    event.currentTarget.style.setProperty("--pointer-x", "0");
+    event.currentTarget.style.setProperty("--pointer-y", "0");
+  };
+
   return (
-    <section id="home" className="hero" onPointerMove={handlePointerMove}>
+    <section
+      id="home"
+      className="hero"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
       <Image
         className="hero-photo"
         src={scenes.hero}
-        alt="Three monumental illuminated doorways for Tarik, Nour, and Khaled"
+        alt={t.visuals.hero}
         fill
         priority
         sizes="100vw"
       />
       <div className="hero-photographic-shift" aria-hidden="true" />
+      <div className="hero-ambient" aria-hidden="true">
+        {destinations.map((destination) => (
+          <span className={`hero-ambient-${destination.id}`} key={destination.id} />
+        ))}
+      </div>
       <div className="hero-copy-wall" aria-hidden="true" />
       <div className="hero-content">
         <p className="hero-house-label">BAMAROUF STUDIO</p>
@@ -123,6 +138,7 @@ function Hero({ language, onEnter }: { language: Language; onEnter: EnterDestina
         {destinations.map((destination) => (
           <a
             className={`hero-doorway hero-doorway-${destination.id}`}
+            data-destination={destination.id}
             href={destination.href}
             key={destination.id}
             onClick={(event) => onEnter(event, destination)}
@@ -151,7 +167,7 @@ function HouseScene({ language }: { language: Language }) {
       <Image
         className="scene-image"
         src={scenes.house}
-        alt="A travertine interior corridor with bronze light inside the Bamarouf house"
+        alt={t.visuals.house}
         fill
         sizes="100vw"
       />
@@ -190,7 +206,7 @@ function WorldScene({
       <Image
         className="scene-image world-scene-image"
         src={image}
-        alt={`${destination.name}, ${localized.discipline}, architectural environment`}
+        alt={localized.alt}
         fill
         sizes="100vw"
       />
@@ -209,7 +225,12 @@ function WorldScene({
         <h3>{destination.name}</h3>
         <strong>{localized.discipline}</strong>
         <em>{localized.description}</em>
-        <a href={destination.href} onClick={(event) => onEnter(event, destination)}>
+        <a
+          className="threshold-link"
+          data-destination={destination.id}
+          href={destination.href}
+          onClick={(event) => onEnter(event, destination)}
+        >
           {t.worlds.enter}<Arrow rtl={language === "ar"} />
         </a>
       </div>
@@ -237,7 +258,7 @@ function PrinciplesScene({ language }: { language: Language }) {
   const t = content[language];
   return (
     <section id="philosophy" className="principles-scene cinematic-scene">
-      <Image className="scene-image" src={scenes.principles} alt="Bronze, travertine, and black stone architectural details" fill sizes="100vw" />
+      <Image className="scene-image" src={scenes.principles} alt={t.visuals.principles} fill sizes="100vw" />
       <div className="principles-scene-shade" aria-hidden="true" />
       <div className="principles-content section-shell">
         <div className="principles-intro" data-reveal>
@@ -261,7 +282,7 @@ function FinalDestination({ language, onEnter }: { language: Language; onEnter: 
   const t = content[language];
   return (
     <section className="final-scene cinematic-scene">
-      <Image className="scene-image" src={scenes.final} alt="A long silent corridor leading to a distant light" fill sizes="100vw" />
+      <Image className="scene-image" src={scenes.final} alt={t.visuals.final} fill sizes="100vw" />
       <div className="final-scene-shade" aria-hidden="true" />
       <div className="final-content section-shell" data-reveal>
         <div className="final-statement">
@@ -270,7 +291,12 @@ function FinalDestination({ language, onEnter }: { language: Language; onEnter: 
         </div>
         <nav className="destination-list" aria-label={t.final.title}>
           {destinations.map((destination, index) => (
-            <a href={destination.href} key={destination.id} onClick={(event) => onEnter(event, destination)}>
+            <a
+              data-destination={destination.id}
+              href={destination.href}
+              key={destination.id}
+              onClick={(event) => onEnter(event, destination)}
+            >
               <span className="destination-index">0{index + 1}</span>
               <span>
                 <strong>{destination.name}</strong>
@@ -343,16 +369,41 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
+    if (introVisible) return;
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    let frame = 0;
+
+    const revealVisible = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        const revealLine = window.innerHeight * 0.9;
+        elements.forEach((element) => {
+          if (element.classList.contains("is-visible")) return;
+          const bounds = element.getBoundingClientRect();
+          if (bounds.top < revealLine && bounds.bottom > 0) element.classList.add("is-visible");
+        });
+        frame = 0;
+      });
+    };
+
+    revealVisible();
+    window.addEventListener("scroll", revealVisible, { passive: true });
+    window.addEventListener("resize", revealVisible);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", revealVisible);
+      window.removeEventListener("resize", revealVisible);
+    };
+  }, [introVisible, language]);
+
+  useEffect(() => {
+    const sceneElements = Array.from(document.querySelectorAll<HTMLElement>(".hero, .cinematic-scene"));
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
+        entry.target.classList.toggle("is-active", entry.isIntersecting);
       });
-    }, { threshold: 0.14, rootMargin: "0px 0px -8%" });
-    elements.forEach((element) => observer.observe(element));
+    }, { threshold: 0.24 });
+    sceneElements.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
   }, []);
 
@@ -378,14 +429,19 @@ export default function Home() {
     document.body.dataset.entering = destination.id;
     navigationTimer.current = window.setTimeout(() => {
       window.location.assign(destination.href);
-    }, 850);
+    }, 720);
   };
 
   return (
     <>
-      <a className="skip-link" href="#home">{content[language].skipContent}</a>
+      <a className="skip-link" href="#house">{content[language].skipContent}</a>
       {introVisible && <Intro language={language} onComplete={finishIntro} />}
-      <div className="site-shell" data-entering={entering ?? undefined}>
+      <div
+        aria-hidden={introVisible || undefined}
+        className="site-shell"
+        data-entering={entering ?? undefined}
+        inert={introVisible}
+      >
         <Header language={language} setLanguage={setLanguage} />
         <main>
           <Hero language={language} onEnter={enterDestination} />

@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import "./globals.css";
 
 const title = "BAMAROUF STUDIO | A House of Specialists";
-const description = "The architectural entrance to three independent worlds: digital experiences, graphic design, and systems engineering.";
+const description = "One house for three independent practices: digital experiences, graphic design, and systems engineering.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
