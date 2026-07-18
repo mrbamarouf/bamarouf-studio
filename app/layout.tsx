@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     applicationName: "BAMAROUF STUDIO",
-    keywords: ["BAMAROUF STUDIO", "Tarik Bamarouf", "noor", "Khaled Bamarouf"],
+    keywords: ["BAMAROUF STUDIO", "TARIK BAMAROUF", "NOOR BAMAROUF", "KHALED BAMAROUF"],
     alternates: { canonical: "/" },
     icons: {
       icon: [

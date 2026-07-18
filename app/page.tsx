@@ -287,7 +287,7 @@ function WorldScene({
 
       <div className="world-scene-copy" data-reveal>
         <span className="world-scene-count">0{index + 1}</span>
-        {destination.id !== "noor" && <p>{destination.firstName}</p>}
+        <p>{destination.firstName}</p>
         <h3>{destination.name}</h3>
         <strong>{localized.discipline}</strong>
         <em>{localized.description}</em>
