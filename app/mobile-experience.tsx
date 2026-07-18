@@ -24,6 +24,15 @@ type EnterMobileDestination = (
 ) => void;
 
 const MOBILE_QUERY = "(max-width: 767px)";
+const MOBILE_SCENES = [
+  "mobile-gate",
+  "mobile-studio",
+  "mobile-tarik",
+  "mobile-noor",
+  "mobile-khaled",
+  "mobile-final",
+  "mobile-footer",
+] as const;
 
 const mobileSceneImages = {
   tarik: "/architecture/mobile/tarik-portal.jpg",
@@ -31,8 +40,12 @@ const mobileSceneImages = {
   khaled: "/architecture/mobile/khaled-portal.jpg",
 } as const;
 
-function MobileArrow({ rtl = false }: { rtl?: boolean }) {
-  return <span className="m-arrow" aria-hidden="true">{rtl ? "←" : "→"}</span>;
+function MobileArrow({ direction = "forward" }: { direction?: "forward" | "down" }) {
+  return (
+    <span className={`m-arrow m-arrow-${direction}`} aria-hidden="true">
+      {direction === "down" ? "↓" : "→"}
+    </span>
+  );
 }
 
 function MobileIntro({
@@ -51,7 +64,7 @@ function MobileIntro({
 
     document.body.classList.add("mobile-intro-open");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reducedMotion ? 1150 : 7900);
+    const timer = window.setTimeout(onComplete, reducedMotion ? 1100 : 7600);
 
     return () => {
       window.clearTimeout(timer);
@@ -88,38 +101,39 @@ function MobileIntro({
 function MobileHeader({
   language,
   setLanguage,
+  activeScene,
   menuOpen,
   onOpenMenu,
 }: {
   language: Language;
   setLanguage: SetLanguage;
+  activeScene: string;
   menuOpen: boolean;
   onOpenMenu: () => void;
 }) {
-  const [scrolled, setScrolled] = useState(false);
   const t = mobileContent[language];
-
-  useEffect(() => {
-    if (!window.matchMedia(MOBILE_QUERY).matches) return;
-    const onScroll = () => setScrolled(window.scrollY > 28);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const activeIndex = Math.max(0, MOBILE_SCENES.indexOf(activeScene as (typeof MOBILE_SCENES)[number]));
+  const lightScene = activeScene === "mobile-noor";
 
   return (
-    <header className="m-header" data-scrolled={scrolled || undefined}>
-      <a className="m-header-brand" href="#mobile-home" aria-label={t.nav.home}>
-        <Image src="/brand/logo-symbol-light.png" alt="" width={620} height={730} unoptimized />
+    <header className="m-header" data-light-scene={lightScene || undefined}>
+      <a className="m-header-brand" href="#mobile-gate" aria-label={t.nav.gate}>
+        <Image src="/brand/logo-header-mark.png" alt="" width={620} height={730} unoptimized />
         <span>BAMAROUF <small>STUDIO</small></span>
       </a>
 
       <div className="m-header-actions">
-        <div className="m-header-language" aria-label={t.languageLabel}>
-          <button type="button" aria-pressed={language === "ar"} onClick={() => setLanguage("ar")}>AR</button>
-          <span aria-hidden="true" />
-          <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")}>EN</button>
-        </div>
+        <span className="m-header-progress" aria-hidden="true">
+          {String(activeIndex + 1).padStart(2, "0")} <i /> {String(MOBILE_SCENES.length).padStart(2, "0")}
+        </span>
+        <button
+          className="m-header-language"
+          type="button"
+          onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+          aria-label={t.languageLabel}
+        >
+          {language === "en" ? "AR" : "EN"}
+        </button>
         <button
           className="m-menu-button"
           type="button"
@@ -140,37 +154,38 @@ function MobileMenu({
   open,
   language,
   setLanguage,
+  activeScene,
   onClose,
+  onGoToScene,
 }: {
   open: boolean;
   language: Language;
   setLanguage: SetLanguage;
+  activeScene: string;
   onClose: () => void;
+  onGoToScene: (scene: string) => void;
 }) {
   const t = mobileContent[language];
   const menuRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-  const lockedScroll = useRef(0);
+  const routes = [
+    { id: "mobile-gate", label: t.nav.gate },
+    { id: "mobile-studio", label: t.nav.studio },
+    { id: "mobile-tarik", label: "TARIK BAMAROUF" },
+    { id: "mobile-noor", label: "NOOR BAMAROUF" },
+    { id: "mobile-khaled", label: "KHALED BAMAROUF" },
+    { id: "mobile-final", label: t.nav.final },
+    { id: "mobile-footer", label: t.nav.contact },
+  ];
 
-  const navigateToSection = (event: ReactMouseEvent<HTMLAnchorElement>, selector: string) => {
-    event.preventDefault();
+  const selectScene = (scene: string) => {
     onClose();
-    window.setTimeout(() => {
-      const target = document.querySelector<HTMLElement>(selector);
-      if (!target) return;
-      window.history.replaceState(null, "", selector);
-      window.scrollTo({
-        top: window.scrollY + target.getBoundingClientRect().top,
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
-      });
-    }, 80);
+    window.setTimeout(() => onGoToScene(scene), 180);
   };
 
   useEffect(() => {
     if (!open || !window.matchMedia(MOBILE_QUERY).matches) return;
 
-    lockedScroll.current = window.scrollY;
-    document.documentElement.style.setProperty("--mobile-locked-scroll", `${lockedScroll.current}px`);
     document.body.classList.add("mobile-menu-open");
     closeRef.current?.focus();
 
@@ -180,11 +195,11 @@ function MobileMenu({
         onClose();
         return;
       }
-
       if (event.key !== "Tab" || !menuRef.current) return;
+
       const focusable = Array.from(
         menuRef.current.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
         ),
       );
       if (!focusable.length) return;
@@ -204,8 +219,6 @@ function MobileMenu({
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.classList.remove("mobile-menu-open");
-      document.documentElement.style.removeProperty("--mobile-locked-scroll");
-      window.scrollTo({ top: lockedScroll.current, behavior: "instant" });
     };
   }, [open, onClose]);
 
@@ -221,34 +234,42 @@ function MobileMenu({
       aria-modal="true"
       aria-label={t.nav.label}
     >
-      <div className="m-menu-architecture" aria-hidden="true">
-        <span />
+      <div className="m-menu-room" aria-hidden="true">
+        <Image
+          src="/architecture/mobile/hero-gateway.jpg"
+          alt=""
+          fill
+          sizes="(max-width: 767px) 100vw, 1px"
+          quality={82}
+        />
         <span />
         <span />
       </div>
+
       <div className="m-menu-topline">
-        <Image src="/brand/logo-symbol-light.png" alt="" width={620} height={730} unoptimized />
+        <div className="m-menu-mark">
+          <Image src="/brand/logo-header-mark.png" alt="" width={620} height={730} unoptimized />
+          <span>BAMAROUF STUDIO</span>
+        </div>
         <button ref={closeRef} type="button" onClick={onClose} aria-label={t.closeLabel}>
           <span aria-hidden="true" />
           <span aria-hidden="true" />
         </button>
       </div>
 
-      <nav className="m-menu-primary" aria-label={t.nav.label}>
-        <a href="#mobile-home" onClick={(event) => navigateToSection(event, "#mobile-home")}>{t.nav.home}</a>
-        <a href="#mobile-studio" onClick={(event) => navigateToSection(event, "#mobile-studio")}>{t.nav.studio}</a>
-        <a href="#mobile-worlds" onClick={(event) => navigateToSection(event, "#mobile-worlds")}>{t.nav.worlds}</a>
-        <a href="#mobile-philosophy" onClick={(event) => navigateToSection(event, "#mobile-philosophy")}>{t.nav.philosophy}</a>
-      </nav>
-
-      <div className="m-menu-worlds">
-        {mobileDestinations.map((destination, index) => (
-          <a href={destination.href} key={destination.id}>
-            <span>0{index + 1}</span>
-            <strong>{destination.name}</strong>
-          </a>
+      <nav className="m-menu-routes" aria-label={t.nav.label}>
+        {routes.map((route, index) => (
+          <button
+            key={route.id}
+            type="button"
+            aria-current={activeScene === route.id ? "page" : undefined}
+            onClick={() => selectScene(route.id)}
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <strong>{route.label}</strong>
+          </button>
         ))}
-      </div>
+      </nav>
 
       <div className="m-menu-language" aria-label={t.languageLabel}>
         <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")}>ENGLISH</button>
@@ -259,215 +280,223 @@ function MobileMenu({
   );
 }
 
-function MobileHero({ language }: { language: Language }) {
+function SceneAdvance({
+  label,
+  onActivate,
+}: {
+  label: string;
+  onActivate: () => void;
+}) {
+  return (
+    <button className="m-scene-advance" type="button" onClick={onActivate}>
+      <span>{label}</span>
+      <MobileArrow direction="down" />
+    </button>
+  );
+}
+
+function MobileGate({
+  language,
+  active,
+  onAdvance,
+}: {
+  language: Language;
+  active: boolean;
+  onAdvance: () => void;
+}) {
   const t = mobileContent[language];
 
   return (
-    <section id="mobile-home" className="m-hero" aria-labelledby="mobile-hero-title">
-      <div className="m-hero-image" role="img" aria-label={t.hero.alt} />
-      <div className="m-hero-light" aria-hidden="true" />
-      <div className="m-hero-world-index" aria-hidden="true">
-        <span>01</span><span>02</span><span>03</span>
+    <section
+      id="mobile-gate"
+      className="m-scene m-gate"
+      data-active={active || undefined}
+      aria-labelledby="mobile-gate-title"
+    >
+      <div className="m-gate-camera" role="img" aria-label={t.gate.alt}>
+        <Image
+          src="/architecture/mobile/hero-gateway.jpg"
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 767px) 100vw, 1px"
+          quality={90}
+        />
       </div>
-      <div className="m-hero-content">
-        <p className="m-eyebrow">{t.hero.eyebrow}</p>
-        <h1 id="mobile-hero-title">
-          <span>{t.hero.title[0]}</span>
-          <span>{t.hero.title[1]}</span>
+      <div className="m-gate-light" aria-hidden="true"><span /><span /></div>
+      <div className="m-gate-copy">
+        <p className="m-scene-label">{t.gate.label}</p>
+        <h1 id="mobile-gate-title">
+          <span>{t.gate.title[0]}</span>
+          <span>{t.gate.title[1]}</span>
         </h1>
-        <div className="m-hero-copy">
-          <p>{t.hero.copy[0]}</p>
-          <p>{t.hero.copy[1]}</p>
-        </div>
-        <a className="m-outline-cta" href="#mobile-worlds">
-          {t.hero.cta}<MobileArrow rtl={language === "ar"} />
-        </a>
+        <p>{t.gate.copy}</p>
+        <button type="button" className="m-primary-action" onClick={onAdvance}>
+          {t.gate.cta}<MobileArrow direction="forward" />
+        </button>
       </div>
+      <SceneAdvance label={t.swipe} onActivate={onAdvance} />
     </section>
   );
 }
 
-function MobilePortal({
-  destination,
+function MobileStudio({
   language,
-  index,
-  entering,
-  onEnter,
+  active,
+  onAdvance,
 }: {
-  destination: MobileDestination;
   language: Language;
-  index: number;
-  entering: boolean;
-  onEnter: EnterMobileDestination;
+  active: boolean;
+  onAdvance: () => void;
 }) {
-  const [awake, setAwake] = useState(false);
-  const [touched, setTouched] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const localized = destination[language];
   const t = mobileContent[language];
-
-  useEffect(() => {
-    if (!window.matchMedia(MOBILE_QUERY).matches || !sectionRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setAwake(entry.isIntersecting && entry.intersectionRatio >= 0.28),
-      { threshold: [0, 0.28, 0.55] },
-    );
-    observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
-    if (event.pointerType === "touch" || event.pointerType === "pen") setTouched(true);
-  };
 
   return (
     <section
-      ref={sectionRef}
-      className={`m-portal m-portal-${destination.id}`}
-      data-awake={awake || undefined}
-      data-touched={touched || undefined}
-      data-entering={entering || undefined}
-      aria-labelledby={`mobile-${destination.id}-title`}
-      onPointerDown={onPointerDown}
-      onPointerUp={() => setTouched(false)}
-      onPointerCancel={() => setTouched(false)}
+      id="mobile-studio"
+      className="m-scene m-studio"
+      data-active={active || undefined}
+      aria-labelledby="mobile-studio-title"
     >
-      <div className="m-portal-camera" role="img" aria-label={localized.alt}>
+      <div className="m-studio-material" role="img" aria-label={t.studio.alt}>
         <Image
-          className="m-portal-image"
-          src={mobileSceneImages[destination.id]}
+          src="/architecture/mobile/philosophy-detail.jpg"
           alt=""
           fill
           sizes="(max-width: 767px) 100vw, 1px"
           quality={88}
         />
       </div>
-      <div className="m-portal-architecture" aria-hidden="true">
-        <span className="m-portal-interior" />
-        <span className="m-portal-depth" />
-        <span className="m-portal-reflection" />
-        <span className="m-portal-material" />
+      <div className="m-studio-light" aria-hidden="true"><span /><span /></div>
+      <div className="m-studio-copy">
+        <p className="m-scene-label">{t.studio.label}</p>
+        <h2 id="mobile-studio-title">
+          <span>{t.studio.title[0]}</span>
+          <span>{t.studio.title[1]}</span>
+        </h2>
+        <p>{t.studio.copy}</p>
       </div>
-      <div className="m-portal-copy">
-        <span className="m-portal-count">0{index + 1}</span>
+      <div className="m-studio-signatures" aria-label={t.studio.copy}>
+        {t.studio.signatures.map((signature) => <span key={signature}>{signature}</span>)}
+      </div>
+      <SceneAdvance label={t.studio.next} onActivate={onAdvance} />
+    </section>
+  );
+}
+
+function MobileWorld({
+  destination,
+  language,
+  index,
+  active,
+  entering,
+  onAdvance,
+  onEnter,
+}: {
+  destination: MobileDestination;
+  language: Language;
+  index: number;
+  active: boolean;
+  entering: boolean;
+  onAdvance: () => void;
+  onEnter: EnterMobileDestination;
+}) {
+  const [touched, setTouched] = useState(false);
+  const localized = destination[language];
+  const t = mobileContent[language];
+
+  const respondToTouch = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType !== "touch" && event.pointerType !== "pen") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+    const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+    event.currentTarget.style.setProperty("--touch-x", `${x.toFixed(1)}%`);
+    event.currentTarget.style.setProperty("--touch-y", `${y.toFixed(1)}%`);
+    setTouched(true);
+  };
+
+  return (
+    <section
+      id={`mobile-${destination.id}`}
+      className={`m-scene m-world m-world-${destination.id}`}
+      data-active={active || undefined}
+      data-touched={touched || undefined}
+      data-entering={entering || undefined}
+      aria-labelledby={`mobile-${destination.id}-title`}
+      onPointerDown={respondToTouch}
+      onPointerUp={() => setTouched(false)}
+      onPointerCancel={() => setTouched(false)}
+    >
+      <div className="m-world-camera" role="img" aria-label={localized.alt}>
+        <Image
+          src={mobileSceneImages[destination.id]}
+          alt=""
+          fill
+          sizes="(max-width: 767px) 100vw, 1px"
+          quality={90}
+        />
+      </div>
+      <div className="m-world-atmosphere" aria-hidden="true">
+        <span className="m-world-depth" />
+        <span className="m-world-light" />
+        <span className="m-world-reflection" />
+        <span className="m-world-rake" />
+      </div>
+
+      <div className="m-world-copy">
+        <span className="m-world-index">{String(index + 1).padStart(2, "0")}</span>
         <h2 id={`mobile-${destination.id}-title`}>
-          {destination.name.split(" ").map((part) => <span key={part}>{part}</span>)}
+          {destination.name.split(" ").map((part, partIndex) => (
+            <span key={`${part}-${partIndex}`}>{part}</span>
+          ))}
         </h2>
         <strong>{localized.discipline}</strong>
         <p>{localized.description}</p>
         <a href={destination.href} onClick={(event) => onEnter(event, destination)}>
-          {t.worlds.enter}<MobileArrow rtl={language === "ar"} />
+          {t.worlds.enter}<MobileArrow direction="forward" />
         </a>
       </div>
-    </section>
-  );
-}
-
-function MobileWorlds({
-  language,
-  entering,
-  onEnter,
-}: {
-  language: Language;
-  entering: string | null;
-  onEnter: EnterMobileDestination;
-}) {
-  const t = mobileContent[language];
-
-  return (
-    <section id="mobile-worlds" className="m-worlds" aria-labelledby="mobile-worlds-title">
-      <header className="m-worlds-intro">
-        <p className="m-eyebrow">{t.worlds.eyebrow}</p>
-        <h2 id="mobile-worlds-title">{t.worlds.title}</h2>
-        <span aria-hidden="true" />
-      </header>
-      {mobileDestinations.map((destination, index) => (
-        <MobilePortal
-          key={destination.id}
-          destination={destination}
-          language={language}
-          index={index}
-          entering={entering === destination.id}
-          onEnter={onEnter}
-        />
-      ))}
-    </section>
-  );
-}
-
-function MobilePhilosophy({ language }: { language: Language }) {
-  const t = mobileContent[language];
-
-  return (
-    <section id="mobile-studio" className="m-philosophy" aria-labelledby="mobile-philosophy-title">
-      <span id="mobile-philosophy" className="m-anchor" aria-hidden="true" />
-      <div className="m-philosophy-architecture" aria-hidden="true">
-        <div className="m-philosophy-image">
-          <Image
-            src="/architecture/mobile/philosophy-detail.jpg"
-            alt=""
-            fill
-            sizes="(max-width: 767px) 100vw, 1px"
-            quality={86}
-          />
-        </div>
-        <span />
-      </div>
-      <div className="m-philosophy-content">
-        <p className="m-eyebrow">{t.philosophy.eyebrow}</p>
-        <h2 id="mobile-philosophy-title">
-          <span>{t.philosophy.title[0]}</span>
-          <span>{t.philosophy.title[1]}</span>
-        </h2>
-        <div className="m-philosophy-copy">
-          <p>{t.philosophy.copy[0]}</p>
-          <p>{t.philosophy.copy[1]}</p>
-        </div>
-        <div className="m-philosophy-values">
-          {t.philosophy.values.map((value, index) => (
-            <article key={value.title}>
-              <span>0{index + 1}</span>
-              <div>
-                <h3>{value.title}</h3>
-                <p>{value.copy}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
+      <SceneAdvance label={t.worlds.continue} onActivate={onAdvance} />
     </section>
   );
 }
 
 function MobileFinal({
   language,
+  active,
   entering,
+  onAdvance,
   onEnter,
 }: {
   language: Language;
+  active: boolean;
   entering: string | null;
+  onAdvance: () => void;
   onEnter: EnterMobileDestination;
 }) {
   const t = mobileContent[language];
 
   return (
-    <section className="m-final" aria-labelledby="mobile-final-title">
-      <div className="m-final-image" role="img" aria-label={t.final.alt}>
+    <section
+      id="mobile-final"
+      className="m-scene m-final"
+      data-active={active || undefined}
+      aria-labelledby="mobile-final-title"
+    >
+      <div className="m-final-camera" role="img" aria-label={t.final.alt}>
         <Image
           src="/architecture/mobile/final-corridor.jpg"
           alt=""
           fill
           sizes="(max-width: 767px) 100vw, 1px"
-          quality={88}
+          quality={90}
         />
       </div>
-      <div className="m-final-light" aria-hidden="true" />
-      <div className="m-final-content">
-        <p className="m-eyebrow">{t.final.eyebrow}</p>
+      <div className="m-final-light" aria-hidden="true"><span /><span /></div>
+      <div className="m-final-copy">
+        <p className="m-scene-label">{t.final.label}</p>
         <h2 id="mobile-final-title">{t.final.title}</h2>
-        <div className="m-final-copy">
-          {t.final.copy.map((line) => <p key={line}>{line}</p>)}
-        </div>
+        <p>{t.final.copy}</p>
         <nav className="m-final-destinations" aria-label={t.final.title}>
           {mobileDestinations.map((destination, index) => (
             <a
@@ -476,54 +505,72 @@ function MobileFinal({
               data-entering={entering === destination.id || undefined}
               onClick={(event) => onEnter(event, destination)}
             >
-              <span>0{index + 1}</span>
+              <span>{String(index + 1).padStart(2, "0")}</span>
               <strong>{destination.name}</strong>
-              <MobileArrow rtl={language === "ar"} />
+              <MobileArrow direction="forward" />
             </a>
           ))}
         </nav>
       </div>
+      <SceneAdvance label={t.swipe} onActivate={onAdvance} />
     </section>
   );
 }
 
-function MobileFooter({
+function MobileFooterScene({
   language,
   setLanguage,
+  active,
+  onReturn,
   onEnter,
 }: {
   language: Language;
   setLanguage: SetLanguage;
+  active: boolean;
+  onReturn: () => void;
   onEnter: EnterMobileDestination;
 }) {
   const t = mobileContent[language];
 
   return (
-    <footer className="m-footer">
+    <footer id="mobile-footer" className="m-scene m-footer" data-active={active || undefined}>
+      <div className="m-footer-material" aria-hidden="true">
+        <Image
+          src="/architecture/mobile/philosophy-detail.jpg"
+          alt=""
+          fill
+          sizes="(max-width: 767px) 100vw, 1px"
+          quality={76}
+        />
+        <span />
+      </div>
       <div className="m-footer-brand">
         <Image
           src="/brand/logo-footer-lockup.png"
           alt="BAMAROUF STUDIO, بامعروف استديو"
           width={950}
           height={1257}
-          sizes="(max-width: 767px) 176px, 1px"
+          sizes="(max-width: 767px) 156px, 1px"
           unoptimized
         />
         <p>{t.footer.closing}</p>
       </div>
-      <nav className="m-footer-worlds" aria-label={mobileContent[language].worlds.title}>
+      <nav className="m-footer-worlds" aria-label={t.nav.worlds}>
         {mobileDestinations.map((destination) => (
           <a key={destination.id} href={destination.href} onClick={(event) => onEnter(event, destination)}>
             {destination.name}
           </a>
         ))}
       </nav>
-      <div className="m-footer-meta">
+      <div className="m-footer-controls">
         <button type="button" onClick={() => setLanguage(language === "en" ? "ar" : "en")}>
           {language === "en" ? "العربية" : "ENGLISH"}
         </button>
-        <p>© {new Date().getFullYear()} BAMAROUF STUDIO<br />{t.footer.copyright}</p>
+        <button type="button" onClick={onReturn}>{t.footer.returnToGate}</button>
       </div>
+      <p className="m-footer-copyright">
+        © {new Date().getFullYear()} BAMAROUF STUDIO<br />{t.footer.copyright}
+      </p>
     </footer>
   );
 }
@@ -537,7 +584,9 @@ export function MobileExperience({
 }) {
   const [introVisible, setIntroVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeScene, setActiveScene] = useState<string>(MOBILE_SCENES[0]);
   const [entering, setEntering] = useState<string | null>(null);
+  const railRef = useRef<HTMLElement>(null);
   const navigationTimer = useRef<number | null>(null);
   const enteringRef = useRef(false);
   const t = mobileContent[language];
@@ -547,7 +596,32 @@ export function MobileExperience({
     document.body.classList.remove("mobile-intro-open");
   }, []);
 
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const goToScene = useCallback((scene: string) => {
+    const target = document.getElementById(scene);
+    if (!target) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({
+      block: "start",
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+    window.history.replaceState(null, "", `#${scene}`);
+  }, []);
+
+  useEffect(() => {
+    if (!window.matchMedia(MOBILE_QUERY).matches || !railRef.current) return;
+    const scenes = Array.from(railRef.current.querySelectorAll<HTMLElement>(".m-scene"));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) setActiveScene(visible.target.id);
+      },
+      { root: railRef.current, threshold: [0.35, 0.55, 0.72] },
+    );
+    scenes.forEach((scene) => observer.observe(scene));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => () => {
     if (navigationTimer.current) window.clearTimeout(navigationTimer.current);
@@ -565,17 +639,18 @@ export function MobileExperience({
     document.body.dataset.mobileEntering = destination.id;
     navigationTimer.current = window.setTimeout(() => {
       window.location.assign(destination.href);
-    }, reducedMotion ? 70 : 560);
+    }, reducedMotion ? 70 : 820);
   };
 
   return (
     <div className="mobile-experience">
-      <a className="m-skip-link" href="#mobile-main">{t.skipContent}</a>
+      <a className="m-skip-link" href="#mobile-gate">{t.skipContent}</a>
       <MobileIntro language={language} active={introVisible} onComplete={finishIntro} />
       <div className="m-site-shell" aria-hidden={introVisible || undefined} inert={introVisible}>
         <MobileHeader
           language={language}
           setLanguage={setLanguage}
+          activeScene={activeScene}
           menuOpen={menuOpen}
           onOpenMenu={() => setMenuOpen(true)}
         />
@@ -583,15 +658,51 @@ export function MobileExperience({
           open={menuOpen}
           language={language}
           setLanguage={setLanguage}
-          onClose={closeMenu}
+          activeScene={activeScene}
+          onClose={() => setMenuOpen(false)}
+          onGoToScene={goToScene}
         />
-        <main id="mobile-main">
-          <MobileHero language={language} />
-          <MobileWorlds language={language} entering={entering} onEnter={enterDestination} />
-          <MobilePhilosophy language={language} />
-          <MobileFinal language={language} entering={entering} onEnter={enterDestination} />
+
+        <main className="m-scene-rail" ref={railRef}>
+          <MobileGate
+            language={language}
+            active={activeScene === "mobile-gate"}
+            onAdvance={() => goToScene("mobile-studio")}
+          />
+          <MobileStudio
+            language={language}
+            active={activeScene === "mobile-studio"}
+            onAdvance={() => goToScene("mobile-tarik")}
+          />
+          {mobileDestinations.map((destination, index) => (
+            <MobileWorld
+              key={destination.id}
+              destination={destination}
+              language={language}
+              index={index}
+              active={activeScene === `mobile-${destination.id}`}
+              entering={entering === destination.id}
+              onEnter={enterDestination}
+              onAdvance={() => goToScene(index < mobileDestinations.length - 1
+                ? `mobile-${mobileDestinations[index + 1].id}`
+                : "mobile-final")}
+            />
+          ))}
+          <MobileFinal
+            language={language}
+            active={activeScene === "mobile-final"}
+            entering={entering}
+            onEnter={enterDestination}
+            onAdvance={() => goToScene("mobile-footer")}
+          />
+          <MobileFooterScene
+            language={language}
+            setLanguage={setLanguage}
+            active={activeScene === "mobile-footer"}
+            onEnter={enterDestination}
+            onReturn={() => goToScene("mobile-gate")}
+          />
         </main>
-        <MobileFooter language={language} setLanguage={setLanguage} onEnter={enterDestination} />
       </div>
     </div>
   );
