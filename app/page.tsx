@@ -10,6 +10,7 @@ import {
   type PointerEvent,
 } from "react";
 import { content, destinations, type Language } from "./content";
+import { MobileExperience } from "./mobile-experience";
 
 const LANG_KEY = "bamarouf-studio-language";
 
@@ -35,6 +36,7 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
   const t = content[language];
 
   useEffect(() => {
+    if (window.matchMedia("(max-width: 767px)").matches) return;
     document.body.classList.add("intro-open");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timer = window.setTimeout(onComplete, reducedMotion ? 900 : 8600);
@@ -45,7 +47,7 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
   }, [onComplete]);
 
   return (
-    <div className="intro" role="dialog" aria-modal="true" aria-label={t.intro.label}>
+    <div className="intro desktop-only" role="dialog" aria-modal="true" aria-label={t.intro.label}>
       <div className="intro-blackout" aria-hidden="true" />
       <div className="intro-scene" aria-hidden="true">
         <Image className="intro-scene-image" src={scenes.intro} alt="" fill priority sizes="100vw" />
@@ -436,6 +438,7 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
+    if (window.matchMedia("(max-width: 767px)").matches) return;
     const sceneElements = Array.from(document.querySelectorAll<HTMLElement>(".hero, .cinematic-scene"));
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -447,6 +450,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (window.matchMedia("(max-width: 767px)").matches) return;
     if (introVisible || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const sceneElements = Array.from(document.querySelectorAll<HTMLElement>(".hero, .cinematic-scene"));
@@ -510,11 +514,11 @@ export default function Home() {
 
   return (
     <>
-      <a className="skip-link" href="#house">{content[language].skipContent}</a>
+      <a className="skip-link desktop-only" href="#house">{content[language].skipContent}</a>
       {introVisible && <Intro language={language} onComplete={finishIntro} />}
       <div
         aria-hidden={introVisible || undefined}
-        className="site-shell"
+        className="site-shell desktop-only"
         data-entering={entering ?? undefined}
         inert={introVisible}
       >
@@ -528,6 +532,7 @@ export default function Home() {
         </main>
         <Footer language={language} setLanguage={setLanguage} onEnter={enterDestination} />
       </div>
+      <MobileExperience language={language} setLanguage={setLanguage} />
     </>
   );
 }

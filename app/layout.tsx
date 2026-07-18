@@ -1,9 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
+import "./mobile.css";
 
 const title = "BAMAROUF STUDIO — A House of Specialists";
 const description = "A shared architectural address for three independent practices in digital experiences, graphic design, and systems engineering.";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#080706",
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
