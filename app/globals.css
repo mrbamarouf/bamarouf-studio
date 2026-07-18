@@ -15,18 +15,26 @@
 }
 
 @font-face {
-  font-family: "Bamarouf Arabic Display";
-  src: url("/fonts/NotoNaskhArabic-Variable.ttf") format("truetype");
+  font-family: "IBM Plex Sans Arabic";
+  src: url("/fonts/IBMPlexSansArabic-Regular.ttf") format("truetype");
   font-style: normal;
-  font-weight: 400 700;
+  font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Bamarouf Arabic Sans";
-  src: url("/fonts/NotoSansArabic-Variable.ttf") format("truetype");
+  font-family: "IBM Plex Sans Arabic";
+  src: url("/fonts/IBMPlexSansArabic-Medium.ttf") format("truetype");
   font-style: normal;
-  font-weight: 200 900;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Arabic";
+  src: url("/fonts/IBMPlexSansArabic-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
   font-display: swap;
 }
 
@@ -48,6 +56,10 @@
   --ease-door: cubic-bezier(0.65, 0, 0.15, 1);
   --z-header: 40;
   --z-intro: 100;
+  --font-arabic: "IBM Plex Sans Arabic", Tahoma, Arial, sans-serif;
+  --font-arabic-weight-body: 400;
+  --font-arabic-weight-ui: 500;
+  --font-arabic-weight-heading: 600;
 }
 
 * {
@@ -104,7 +116,7 @@ a:focus-visible {
 }
 
 [dir="rtl"] body {
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
+  font-family: var(--font-arabic);
 }
 
 .section-shell {
@@ -287,7 +299,7 @@ a:focus-visible {
 }
 
 [dir="rtl"] .intro-statement {
-  font-family: "Bamarouf Arabic Sans", sans-serif;
+  font-family: var(--font-arabic);
   font-size: 0.9rem;
   letter-spacing: 0.08em;
 }
@@ -512,7 +524,7 @@ a:focus-visible {
 }
 
 [dir="rtl"] .hero h1 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: clamp(3.6rem, 4.8vw, 5.8rem);
   line-height: 1.18;
 }
@@ -785,7 +797,7 @@ a:hover .arrow {
 [dir="rtl"] .worlds-heading h2,
 [dir="rtl"] .principles-intro h2,
 [dir="rtl"] .final-statement h2 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   line-height: 1.25;
 }
 
@@ -1073,7 +1085,7 @@ a:hover .arrow {
 }
 
 [dir="rtl"] .principle h3 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   letter-spacing: 0;
 }
 
@@ -1467,7 +1479,7 @@ a:hover .arrow {
 [dir="rtl"] .worlds-introduction h2,
 [dir="rtl"] .principles-intro h2,
 [dir="rtl"] .final-statement h2 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   line-height: 1.25;
 }
 
@@ -1700,7 +1712,7 @@ a:hover .arrow {
 }
 
 [dir="rtl"] .world-scene-copy h3 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   line-height: 1.2;
 }
 
@@ -1798,7 +1810,7 @@ a:hover .arrow {
 }
 
 [dir="rtl"] .principles-scene .principle h3 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   letter-spacing: 0;
 }
 
@@ -2606,7 +2618,7 @@ a:focus-visible {
 }
 
 [dir="rtl"] .house-values h3 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0;
@@ -3440,15 +3452,16 @@ a:focus-visible {
  * Latin system. No tracked uppercase rule is allowed to leak into Arabic.
  */
 [dir="rtl"] body {
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
+  font-family: var(--font-arabic);
+  font-weight: var(--font-arabic-weight-body);
   font-kerning: normal;
-  font-optical-sizing: auto;
   font-synthesis: none;
   font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "calt" 1, "rlig" 1;
   font-variant-ligatures: common-ligatures contextual;
-  letter-spacing: normal;
+  letter-spacing: 0;
   word-spacing: normal;
-  line-height: 1.75;
+  line-height: 1.8;
+  text-rendering: optimizeLegibility;
 }
 
 [dir="rtl"] .skip-link,
@@ -3476,10 +3489,14 @@ a:focus-visible {
 [dir="rtl"] .final-scene .destination-list small,
 [dir="rtl"] .footer-brand p,
 [dir="rtl"] .footer-closing > p {
-  letter-spacing: normal;
+  font-family: var(--font-arabic);
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "calt" 1, "rlig" 1;
+  font-variant-ligatures: common-ligatures contextual;
+  letter-spacing: 0;
   word-spacing: normal;
   text-transform: none;
-  text-justify: auto;
+  text-rendering: optimizeLegibility;
 }
 
 /* Arabic header and navigation */
@@ -3490,24 +3507,31 @@ a:focus-visible {
 
 [dir="rtl"] .primary-nav a {
   padding: 10px 2px;
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 480;
-  line-height: 1.55;
+  font-family: var(--font-arabic);
+  font-size: 0.9rem;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.6;
   text-align: right;
   white-space: nowrap;
+}
+
+[dir="rtl"] .skip-link {
+  font-family: var(--font-arabic);
+  font-size: 0.875rem;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.6;
 }
 
 /* Arabic intro */
 [dir="rtl"] .intro-statement {
   font-size: 1rem;
-  font-weight: 480;
-  line-height: 1.7;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.75;
 }
 
 [dir="rtl"] .intro-skip {
-  font-size: 0.84rem;
-  font-weight: 500;
+  font-size: 0.88rem;
+  font-weight: var(--font-arabic-weight-ui);
   line-height: 1.6;
 }
 
@@ -3520,9 +3544,9 @@ a:focus-visible {
 
 [dir="rtl"] .hero h1 {
   color: #e7cfad;
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: clamp(3.25rem, 4.25vw, 5.05rem);
-  font-weight: 500;
+  font-weight: var(--font-arabic-weight-heading);
   line-height: 1.22;
   text-align: right;
   text-wrap: nowrap;
@@ -3537,16 +3561,16 @@ a:focus-visible {
   max-width: 34rem;
   margin-top: 28px;
   font-size: 1rem;
-  font-weight: 480;
-  line-height: 1.75;
+  font-weight: var(--font-arabic-weight-body);
+  line-height: 1.8;
   text-align: right;
 }
 
 [dir="rtl"] .hero-discover {
   gap: 12px;
   margin-top: 34px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.94rem;
+  font-weight: var(--font-arabic-weight-ui);
   line-height: 1.6;
 }
 
@@ -3556,16 +3580,16 @@ a:focus-visible {
 }
 
 [dir="rtl"] .hero-scroll > span:first-child {
-  font-size: 0.76rem;
-  font-weight: 480;
+  font-size: 0.8rem;
+  font-weight: var(--font-arabic-weight-ui);
   line-height: 1.6;
 }
 
 [dir="rtl"] .hero-doorway-label small {
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 480;
-  line-height: 1.55;
+  font-family: var(--font-arabic);
+  font-size: 0.8rem;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.6;
   white-space: nowrap;
 }
 
@@ -3579,10 +3603,10 @@ a:focus-visible {
 
 [dir="rtl"] .house-scene-copy h2 {
   max-width: 15ch;
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: clamp(2.85rem, 3.75vw, 4.4rem);
-  font-weight: 500;
-  line-height: 1.3;
+  font-weight: var(--font-arabic-weight-heading);
+  line-height: 1.28;
   text-align: right;
   text-wrap: balance;
 }
@@ -3596,8 +3620,8 @@ a:focus-visible {
   max-width: 100%;
   margin-bottom: 10px;
   font-size: 1rem;
-  font-weight: 420;
-  line-height: 1.76;
+  font-weight: var(--font-arabic-weight-body);
+  line-height: 1.82;
   text-align: right;
   white-space: pre-line;
 }
@@ -3609,18 +3633,18 @@ a:focus-visible {
 }
 
 [dir="rtl"] .house-values h3 {
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: 1.08rem;
-  font-weight: 520;
-  line-height: 1.5;
+  font-weight: var(--font-arabic-weight-heading);
+  line-height: 1.6;
   text-align: right;
 }
 
 [dir="rtl"] .house-values p {
   margin-top: 6px;
-  font-size: 0.9rem;
-  font-weight: 400;
-  line-height: 1.72;
+  font-size: 0.94rem;
+  font-weight: var(--font-arabic-weight-body);
+  line-height: 1.8;
   text-align: right;
 }
 
@@ -3634,10 +3658,10 @@ a:focus-visible {
 [dir="rtl"] .worlds-introduction h2 {
   max-width: 12ch;
   margin-inline-start: auto;
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: clamp(2.75rem, 3.6vw, 4.2rem);
-  font-weight: 500;
-  line-height: 1.3;
+  font-weight: var(--font-arabic-weight-heading);
+  line-height: 1.28;
   text-align: right;
   text-wrap: balance;
 }
@@ -3646,28 +3670,28 @@ a:focus-visible {
   max-width: 34rem;
   margin-top: 20px;
   font-size: 1rem;
-  font-weight: 420;
-  line-height: 1.78;
+  font-weight: var(--font-arabic-weight-body);
+  line-height: 1.82;
   text-align: right;
 }
 
 /* Arabic copy inside the three worlds; Latin names remain isolated. */
 [dir="rtl"] .world-scene-copy > strong {
   margin-top: 10px;
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
+  font-family: var(--font-arabic);
   font-size: 0.9rem;
-  font-weight: 520;
-  line-height: 1.55;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.6;
   text-align: right;
 }
 
 [dir="rtl"] .world-scene-copy > em {
   max-width: 36rem;
   margin-top: 20px;
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
+  font-family: var(--font-arabic);
   font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.78;
+  font-weight: var(--font-arabic-weight-body);
+  line-height: 1.82;
   text-align: right;
   text-wrap: pretty;
 }
@@ -3680,20 +3704,20 @@ a:focus-visible {
   gap: 12px;
   margin-top: 28px;
   padding: 14px 20px;
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
-  font-size: 0.86rem;
-  font-weight: 520;
-  line-height: 1.55;
+  font-family: var(--font-arabic);
+  font-size: 0.9rem;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.6;
   text-align: right;
 }
 
 /* Arabic House Philosophy */
 [dir="rtl"] .principles-intro h2 {
   max-width: 14ch;
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: clamp(2.8rem, 3.65vw, 4.25rem);
-  font-weight: 500;
-  line-height: 1.32;
+  font-weight: var(--font-arabic-weight-heading);
+  line-height: 1.3;
   text-align: right;
   text-wrap: balance;
 }
@@ -3705,9 +3729,9 @@ a:focus-visible {
 
 [dir="rtl"] .principles-editorial p {
   margin-bottom: 18px;
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
+  font-family: var(--font-arabic);
   font-size: 1.02rem;
-  font-weight: 400;
+  font-weight: var(--font-arabic-weight-body);
   line-height: 1.85;
   text-align: right;
   text-wrap: pretty;
@@ -3716,10 +3740,10 @@ a:focus-visible {
 /* Arabic final destination */
 [dir="rtl"] .final-statement h2 {
   max-width: 9ch;
-  font-family: "Bamarouf Arabic Display", serif;
+  font-family: var(--font-arabic);
   font-size: clamp(2.9rem, 3.8vw, 4.4rem);
-  font-weight: 500;
-  line-height: 1.3;
+  font-weight: var(--font-arabic-weight-heading);
+  line-height: 1.28;
   text-align: right;
   text-wrap: balance;
 }
@@ -3727,16 +3751,16 @@ a:focus-visible {
 [dir="rtl"] .final-scene .final-statement > p {
   margin-top: 14px;
   font-size: 0.98rem;
-  font-weight: 420;
-  line-height: 1.75;
+  font-weight: var(--font-arabic-weight-body);
+  line-height: 1.82;
   text-align: right;
 }
 
 [dir="rtl"] .final-scene .destination-list small {
   margin-top: 4px;
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
-  font-size: 0.84rem;
-  font-weight: 430;
+  font-family: var(--font-arabic);
+  font-size: 0.88rem;
+  font-weight: var(--font-arabic-weight-ui);
   line-height: 1.6;
   text-align: right;
   white-space: nowrap;
@@ -3745,10 +3769,10 @@ a:focus-visible {
 /* Arabic footer */
 [dir="rtl"] .footer-brand p,
 [dir="rtl"] .footer-closing > p {
-  font-family: "Bamarouf Arabic Sans", Arial, sans-serif;
-  font-size: 0.88rem;
-  font-weight: 480;
-  line-height: 1.7;
+  font-family: var(--font-arabic);
+  font-size: 0.92rem;
+  font-weight: var(--font-arabic-weight-ui);
+  line-height: 1.75;
   text-align: right;
 }
 
