@@ -45,8 +45,9 @@ export const content = {
     },
     hero: {
       title: ["THREE PATHS.", "ONE DESTINATION."],
-      copy: "One family. Three independent worlds. One timeless experience.",
-      discover: "Enter the house",
+      copy: "A HOUSE OF SPECIALISTS.",
+      discover: "Discover the house",
+      scroll: "The house",
     },
     house: {
       title: "A HOUSE OF PURPOSE.",
@@ -54,6 +55,9 @@ export const content = {
         "BAMAROUF STUDIO brings together three independent worlds under one shared house.",
         "Each world has its own identity, discipline, language, and direction. The house does not merge them. It gives each one a place to belong.",
       ],
+      caption: "A shared threshold. Three independent practices.",
+      materialsLabel: "Materials of the house",
+      materials: ["BLACK STONE", "TRAVERTINE", "BRUSHED BRONZE"],
     },
     worlds: {
       title: "THREE INDEPENDENT WORLDS.",
@@ -94,8 +98,9 @@ export const content = {
     },
     hero: {
       title: ["ثلاثة مسارات.", "وجهة واحدة."],
-      copy: "عائلة واحدة. ثلاثة عوالم مستقلة. تجربة واحدة خالدة.",
-      discover: "ادخل إلى البيت",
+      copy: "بيتٌ للمتخصصين.",
+      discover: "اكتشف البيت",
+      scroll: "البيت",
     },
     house: {
       title: "بيتٌ له غاية.",
@@ -103,6 +108,9 @@ export const content = {
         "يجمع بامعروف استديو ثلاثة عوالم مستقلة تحت بيت واحد.",
         "لكل عالم هويته وتخصصه ولغته واتجاهه الخاص. لا يدمجها البيت، بل يمنح كل عالم مكانه الذي ينتمي إليه.",
       ],
+      caption: "عتبة واحدة، وثلاثة تخصصات مستقلة.",
+      materialsLabel: "خامات البيت",
+      materials: ["الحجر الأسود", "الترافرتين", "البرونز المصقول"],
     },
     worlds: {
       title: "ثلاثة عوالم مستقلة.",

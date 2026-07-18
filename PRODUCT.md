@@ -18,7 +18,7 @@ Monolithic, hushed, precise. The experience should convey purpose, heritage, con
 
 ## Anti-references
 
-Generic agency, portfolio, SaaS, startup, or corporate templates. No bright technology palettes, glassmorphism, cyber glow, crowded service cards, developer illustrations, fake contact details, pricing, packages, statistics, or generic marketing language.
+Generic agency, portfolio, SaaS, startup, or corporate templates. No bright technology palettes, glassmorphism, cyber glow, crowded service cards, developer illustrations, fake contact details, pricing, packages, statistics, or generic marketing language. No abstract CSS-only doors, empty black panels, or thin outlines standing in for real architecture.
 
 ## Design Principles
 
@@ -27,6 +27,7 @@ Generic agency, portfolio, SaaS, startup, or corporate templates. No bright tech
 3. Let restraint carry confidence: short copy, deliberate spacing, and controlled motion.
 4. Use materials and light as meaning, not decoration.
 5. Give Arabic and English equal, intentionally composed experiences.
+6. Use the approved three-door architectural photograph as the visual source of truth for thresholds, materials, light, and spatial depth.
 
 ## Accessibility & Inclusion
 

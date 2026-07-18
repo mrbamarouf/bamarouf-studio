@@ -1,10 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type PointerEvent,
+} from "react";
 import { content, destinations, type Language } from "./content";
 
 const LANG_KEY = "bamarouf-studio-language";
+const ARCHITECTURE_IMAGE = "/architecture/three-doors-house.png";
+
+type Destination = (typeof destinations)[number];
+type EnterDestination = (event: MouseEvent<HTMLAnchorElement>, destination: Destination) => void;
 
 function Arrow({ rtl = false }: { rtl?: boolean }) {
   return <span className="arrow" aria-hidden="true">{rtl ? "←" : "→"}</span>;
@@ -15,7 +26,8 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
 
   useEffect(() => {
     document.body.classList.add("intro-open");
-    const timer = window.setTimeout(onComplete, 3400);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(onComplete, reducedMotion ? 80 : 5600);
     return () => {
       window.clearTimeout(timer);
       document.body.classList.remove("intro-open");
@@ -23,22 +35,28 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
   }, [onComplete]);
 
   return (
-    <div className="intro" role="dialog" aria-label={t.intro.label}>
-      <div className="intro-light" aria-hidden="true" />
-      <div className="intro-door">
+    <div className="intro" role="dialog" aria-modal="true" aria-label={t.intro.label}>
+      <div className="intro-scene" aria-hidden="true">
         <Image
-          className="intro-logo"
-          src="/brand/logo-full.png"
-          alt="BAMAROUF STUDIO"
-          width={792}
-          height={1048}
+          className="intro-scene-image"
+          src={ARCHITECTURE_IMAGE}
+          alt=""
+          fill
           priority
+          sizes="100vw"
         />
+        <div className="intro-nightfall" />
+        <div className="intro-monument">
+          <div className="intro-sanctum">
+            <Image src="/brand/logo-full.png" alt="" width={792} height={1048} />
+          </div>
+          <div className="intro-door-leaf" />
+          <div className="intro-edge-light" />
+          <div className="intro-floor-light" />
+        </div>
       </div>
       <p className="intro-statement">{t.intro.statement}</p>
-      <button className="intro-skip" type="button" onClick={onComplete}>
-        {t.intro.skip}
-      </button>
+      <button className="intro-skip" type="button" onClick={onComplete}>{t.intro.skip}</button>
     </div>
   );
 }
@@ -48,9 +66,7 @@ function Header({ language, setLanguage }: { language: Language; setLanguage: (l
   return (
     <header className="site-header">
       <a className="header-mark" href="#home" aria-label={t.nav.home}>
-        <span className="header-mark-surface">
-          <Image src="/brand/logo-symbol.png" alt="" width={620} height={730} priority />
-        </span>
+        <Image src="/brand/logo-symbol.png" alt="" width={620} height={730} priority />
         <span className="header-wordmark">BAMAROUF <small>STUDIO</small></span>
       </a>
 
@@ -70,43 +86,8 @@ function Header({ language, setLanguage }: { language: Language; setLanguage: (l
   );
 }
 
-function ArchitecturalHouse() {
-  return (
-    <div className="house-stage" aria-hidden="true">
-      <div className="night-sky" />
-      <div className="distant-light distant-light-one" />
-      <div className="distant-light distant-light-two" />
-      <div className="house-mass">
-        <div className="house-cap" />
-        <div className="house-wing house-wing-left" />
-        <div className="house-wing house-wing-right" />
-        <div className="hero-portals">
-          {destinations.map((destination) => (
-            <a
-              className={`hero-portal hero-portal-${destination.id}`}
-              href={destination.href}
-              key={destination.id}
-              aria-label={destination.name}
-            >
-              <span className="portal-lintel" />
-              <span className="portal-depth" />
-              <span className="portal-light" />
-              <span className="portal-name">{destination.firstName}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-      <div className="foreground-stone foreground-stone-left" />
-      <div className="foreground-stone foreground-stone-right" />
-      <div className="approach-path" />
-      <div className="waterline" />
-    </div>
-  );
-}
-
-function Hero({ language }: { language: Language }) {
+function Hero({ language, onEnter }: { language: Language; onEnter: EnterDestination }) {
   const t = content[language];
-  const heroRef = useRef<HTMLElement>(null);
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -117,19 +98,45 @@ function Hero({ language }: { language: Language }) {
   };
 
   return (
-    <section ref={heroRef} id="home" className="hero" onPointerMove={handlePointerMove}>
-      <ArchitecturalHouse />
-      <div className="hero-vignette" aria-hidden="true" />
+    <section id="home" className="hero" onPointerMove={handlePointerMove}>
+      <Image
+        className="hero-photo"
+        src={ARCHITECTURE_IMAGE}
+        alt="Three monumental illuminated doorways for Tarik, Nour, and Khaled"
+        fill
+        priority
+        sizes="100vw"
+      />
+      <div className="hero-photographic-shift" aria-hidden="true" />
+      <div className="hero-copy-wall" aria-hidden="true" />
       <div className="hero-content">
         <p className="hero-house-label">BAMAROUF STUDIO</p>
         <h1>{t.hero.title.map((line) => <span key={line}>{line}</span>)}</h1>
         <p className="hero-copy">{t.hero.copy}</p>
+        <a className="hero-discover" href="#house">{t.hero.discover}<Arrow rtl={language === "ar"} /></a>
       </div>
+
+      <nav className="hero-doorways" aria-label={t.worlds.title}>
+        {destinations.map((destination) => (
+          <a
+            className={`hero-doorway hero-doorway-${destination.id}`}
+            href={destination.href}
+            key={destination.id}
+            onClick={(event) => onEnter(event, destination)}
+          >
+            <span className="hero-doorway-glow" aria-hidden="true" />
+            <span className="hero-doorway-label">
+              <strong>{destination.firstName}</strong>
+              <small>{destination[language].discipline}</small>
+            </span>
+          </a>
+        ))}
+      </nav>
+
       <a className="hero-scroll" href="#house">
-        <span>{t.hero.discover}</span>
-        <span className="scroll-line" aria-hidden="true" />
+        <span>{t.hero.scroll}</span>
+        <span aria-hidden="true" />
       </a>
-      <p className="hero-edition" aria-hidden="true">A HOUSE OF SPECIALISTS · EST. AS ONE HOUSE</p>
     </section>
   );
 }
@@ -137,55 +144,72 @@ function Hero({ language }: { language: Language }) {
 function HouseSection({ language }: { language: Language }) {
   const t = content[language];
   return (
-    <section id="house" className="house-section section-shell">
+    <section id="house" className="house-section">
+      <div className="house-image" data-reveal>
+        <Image
+          src={ARCHITECTURE_IMAGE}
+          alt="Warm stone threshold inside the Bamarouf house"
+          fill
+          sizes="62vw"
+        />
+        <div className="house-image-caption">
+          <span>01</span>
+          <p>{t.house.caption}</p>
+        </div>
+      </div>
+
       <div className="house-copy" data-reveal>
         <p className="section-number">THE HOUSE</p>
         <h2>{t.house.title}</h2>
         <div className="house-paragraphs">
           {t.house.copy.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
-      </div>
-      <div className="material-composition" aria-hidden="true" data-reveal>
-        <div className="stone-plane stone-plane-back" />
-        <div className="stone-plane stone-plane-front" />
-        <div className="light-cut" />
-        <div className="bronze-plinth">
-          <span>B</span>
+        <div className="house-materials" aria-label={t.house.materialsLabel}>
+          {t.house.materials.map((material) => <span key={material}>{material}</span>)}
         </div>
-        <p>ONE HOUSE<br />THREE WORLDS</p>
       </div>
     </section>
   );
 }
 
-function WorldDoor({ destination, language, index }: { destination: (typeof destinations)[number]; language: Language; index: number }) {
-  const localized = destination[language];
-  const isRtl = language === "ar";
-
+function WorldDoor({
+  destination,
+  language,
+  index,
+  onEnter,
+}: {
+  destination: Destination;
+  language: Language;
+  index: number;
+  onEnter: EnterDestination;
+}) {
+  const t = content[language];
   return (
-    <a className={`world-wing world-wing-${destination.id}`} href={destination.href} data-reveal>
-      <div className="world-atmosphere" aria-hidden="true">
-        <span className="world-slab world-slab-left" />
-        <span className="world-slab world-slab-right" />
-        <span className="world-reveal" />
-        <span className="world-threshold" />
-      </div>
-      <div className="world-index">0{index + 1}</div>
-      <div className="world-copy">
-        <p>{destination.firstName}</p>
-        <h3>{destination.name}</h3>
-        <span className="world-discipline">{localized.discipline}</span>
-        {language === "en" && <span className="world-arabic">{destination.ar.discipline}</span>}
-      </div>
-      <span className="world-enter">
-        {content[language].worlds.enter}
-        <Arrow rtl={isRtl} />
+    <a
+      className={`world-door world-door-${destination.id}`}
+      href={destination.href}
+      onClick={(event) => onEnter(event, destination)}
+      data-reveal
+    >
+      <Image
+        src={ARCHITECTURE_IMAGE}
+        alt={`${destination.name} — ${destination[language].discipline}`}
+        fill
+        sizes="34vw"
+      />
+      <span className="world-door-shade" aria-hidden="true" />
+      <span className="world-door-index">0{index + 1}</span>
+      <span className="world-door-copy">
+        <small>{destination.firstName}</small>
+        <strong>{destination.name}</strong>
+        <em>{destination[language].discipline}</em>
+        <span>{t.worlds.enter}<Arrow rtl={language === "ar"} /></span>
       </span>
     </a>
   );
 }
 
-function WorldsSection({ language }: { language: Language }) {
+function WorldsSection({ language, onEnter }: { language: Language; onEnter: EnterDestination }) {
   const t = content[language];
   return (
     <section id="three-worlds" className="worlds-section">
@@ -198,7 +222,13 @@ function WorldsSection({ language }: { language: Language }) {
       </div>
       <div className="worlds-architecture">
         {destinations.map((destination, index) => (
-          <WorldDoor destination={destination} language={language} index={index} key={destination.id} />
+          <WorldDoor
+            destination={destination}
+            language={language}
+            index={index}
+            onEnter={onEnter}
+            key={destination.id}
+          />
         ))}
       </div>
     </section>
@@ -208,44 +238,49 @@ function WorldsSection({ language }: { language: Language }) {
 function PrinciplesSection({ language }: { language: Language }) {
   const t = content[language];
   return (
-    <section id="philosophy" className="principles-section section-shell">
-      <div className="principles-intro" data-reveal>
-        <p className="section-number">HOUSE PRINCIPLES</p>
-        <h2>{t.principles.title}</h2>
-      </div>
-      <div className="principles-list">
-        {t.principles.items.map((item, index) => (
-          <article className="principle" key={item.title} data-reveal>
-            <span>0{index + 1}</span>
-            <h3>{item.title}</h3>
-            <p>{item.copy}</p>
-          </article>
-        ))}
+    <section id="philosophy" className="principles-section">
+      <Image src={ARCHITECTURE_IMAGE} alt="" fill sizes="100vw" />
+      <div className="principles-shade" aria-hidden="true" />
+      <div className="principles-content section-shell">
+        <div className="principles-intro" data-reveal>
+          <p className="section-number">HOUSE PRINCIPLES</p>
+          <h2>{t.principles.title}</h2>
+        </div>
+        <div className="principles-list">
+          {t.principles.items.map((item, index) => (
+            <article className="principle" key={item.title} data-reveal>
+              <span>0{index + 1}</span>
+              <h3>{item.title}</h3>
+              <p>{item.copy}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-function FinalDestination({ language }: { language: Language }) {
+function FinalDestination({ language, onEnter }: { language: Language; onEnter: EnterDestination }) {
   const t = content[language];
-  const isRtl = language === "ar";
   return (
     <section className="final-destination">
-      <div className="final-light" aria-hidden="true" />
+      <Image src={ARCHITECTURE_IMAGE} alt="" fill sizes="100vw" />
+      <div className="final-shade" aria-hidden="true" />
       <div className="final-content section-shell" data-reveal>
         <div className="final-statement">
+          <p className="section-number">ONE DESTINATION</p>
           <h2>{t.final.title}</h2>
           {t.final.copy.map((line) => <p key={line}>{line}</p>)}
         </div>
         <nav className="destination-list" aria-label={t.final.title}>
           {destinations.map((destination, index) => (
-            <a href={destination.href} key={destination.id}>
+            <a href={destination.href} key={destination.id} onClick={(event) => onEnter(event, destination)}>
               <span className="destination-index">0{index + 1}</span>
               <span>
                 <strong>{destination.name}</strong>
                 <small>{destination[language].discipline}</small>
               </span>
-              <Arrow rtl={isRtl} />
+              <Arrow rtl={language === "ar"} />
             </a>
           ))}
         </nav>
@@ -254,24 +289,36 @@ function FinalDestination({ language }: { language: Language }) {
   );
 }
 
-function Footer({ language, setLanguage }: { language: Language; setLanguage: (language: Language) => void }) {
+function Footer({
+  language,
+  setLanguage,
+  onEnter,
+}: {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  onEnter: EnterDestination;
+}) {
   const t = content[language];
   return (
     <footer className="site-footer section-shell">
       <div className="footer-brand">
-        <div className="footer-logo-surface">
-          <Image src="/brand/logo-full.png" alt="BAMAROUF STUDIO" width={792} height={1048} />
-        </div>
+        <Image src="/brand/logo-full.png" alt="BAMAROUF STUDIO" width={792} height={1048} />
         <p>{t.footer.house}</p>
       </div>
       <nav className="footer-worlds" aria-label={t.worlds.title}>
-        {destinations.map((destination) => <a href={destination.href} key={destination.id}>{destination.name}</a>)}
+        {destinations.map((destination) => (
+          <a href={destination.href} key={destination.id} onClick={(event) => onEnter(event, destination)}>
+            {destination.name}
+          </a>
+        ))}
       </nav>
       <div className="footer-closing">
         <p>{t.footer.closing}</p>
         <div className="footer-meta">
           <span>© {new Date().getFullYear()} BAMAROUF STUDIO</span>
-          <button type="button" onClick={() => setLanguage(language === "en" ? "ar" : "en")}>{language === "en" ? "العربية" : "ENGLISH"}</button>
+          <button type="button" onClick={() => setLanguage(language === "en" ? "ar" : "en")}>
+            {language === "en" ? "العربية" : "ENGLISH"}
+          </button>
         </div>
       </div>
     </footer>
@@ -281,6 +328,9 @@ function Footer({ language, setLanguage }: { language: Language; setLanguage: (l
 export default function Home() {
   const [language, setLanguageState] = useState<Language>("en");
   const [introVisible, setIntroVisible] = useState(true);
+  const [entering, setEntering] = useState<string | null>(null);
+  const navigationTimer = useRef<number | null>(null);
+  const enteringRef = useRef(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -297,19 +347,21 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
-    let frame = 0;
-    const updateScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        document.documentElement.style.setProperty("--page-scroll", `${window.scrollY}px`);
-        frame = 0;
+    const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
       });
-    };
-    window.addEventListener("scroll", updateScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", updateScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
+    }, { threshold: 0.14, rootMargin: "0px 0px -8%" });
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => () => {
+    if (navigationTimer.current) window.clearTimeout(navigationTimer.current);
   }, []);
 
   const setLanguage = (nextLanguage: Language) => {
@@ -317,25 +369,36 @@ export default function Home() {
     window.sessionStorage.setItem(LANG_KEY, nextLanguage);
   };
 
-  const finishIntro = () => {
+  const finishIntro = useCallback(() => {
     setIntroVisible(false);
     document.body.classList.remove("intro-open");
+  }, []);
+
+  const enterDestination: EnterDestination = (event, destination) => {
+    event.preventDefault();
+    if (enteringRef.current) return;
+    enteringRef.current = true;
+    setEntering(destination.id);
+    document.body.dataset.entering = destination.id;
+    navigationTimer.current = window.setTimeout(() => {
+      window.location.assign(destination.href);
+    }, 850);
   };
 
   return (
     <>
       <a className="skip-link" href="#home">{content[language].skipContent}</a>
       {introVisible && <Intro language={language} onComplete={finishIntro} />}
-      <div className="site-shell">
+      <div className="site-shell" data-entering={entering ?? undefined}>
         <Header language={language} setLanguage={setLanguage} />
         <main>
-          <Hero language={language} />
+          <Hero language={language} onEnter={enterDestination} />
           <HouseSection language={language} />
-          <WorldsSection language={language} />
+          <WorldsSection language={language} onEnter={enterDestination} />
           <PrinciplesSection language={language} />
-          <FinalDestination language={language} />
+          <FinalDestination language={language} onEnter={enterDestination} />
         </main>
-        <Footer language={language} setLanguage={setLanguage} />
+        <Footer language={language} setLanguage={setLanguage} onEnter={enterDestination} />
       </div>
     </>
   );
