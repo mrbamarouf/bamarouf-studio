@@ -15,7 +15,7 @@ import {
   mobileDestinations,
   type MobileDestination,
 } from "./mobile-content";
-import { MobileIntroEmblem } from "./mobile-intro-emblem";
+import { MobileIntroMark } from "./mobile-intro-mark";
 
 type SetLanguage = (language: Language) => void;
 type EnterMobileDestination = (
@@ -64,7 +64,7 @@ function MobileIntro({
 
     document.body.classList.add("mobile-intro-open");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reducedMotion ? 1100 : 7600);
+    const timer = window.setTimeout(onComplete, reducedMotion ? 1200 : 10000);
 
     return () => {
       window.clearTimeout(timer);
@@ -77,19 +77,25 @@ function MobileIntro({
   return (
     <div className="m-intro" role="dialog" aria-modal="true" aria-label={t.intro.label}>
       <div className="m-intro-black" aria-hidden="true" />
-      <div className="m-intro-architecture" aria-hidden="true">
-        <div className="m-intro-image" />
-        <div className="m-intro-frame">
-          <div className="m-intro-interior" />
-          <div className="m-intro-emblem-stage">
-            <MobileIntroEmblem />
+      <div className="m-intro-film" aria-hidden="true">
+        <div className="m-intro-wall" />
+        <div className="m-intro-threshold">
+          <div className="m-intro-chamber" />
+          <div className="m-intro-mark-stage">
+            <MobileIntroMark />
           </div>
-          <div className="m-intro-door">
-            <span className="m-intro-lock" />
+          <div className="m-intro-door-system">
+            <span className="m-intro-door-leaf m-intro-door-leaf-left" />
+            <span className="m-intro-door-leaf m-intro-door-leaf-right" />
+            <span className="m-intro-door-seam" />
+            <span className="m-intro-lock-bolt" />
           </div>
-          <div className="m-intro-edge" />
-          <div className="m-intro-floor" />
+          <span className="m-intro-edge m-intro-edge-left" />
+          <span className="m-intro-edge m-intro-edge-right" />
+          <span className="m-intro-edge m-intro-edge-top" />
         </div>
+        <div className="m-intro-floor-light" />
+        <div className="m-intro-vignette" />
       </div>
       <button className="m-intro-skip" type="button" onClick={onComplete}>
         {t.intro.skip}

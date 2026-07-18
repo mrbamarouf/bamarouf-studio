@@ -2,63 +2,83 @@
   display: none;
 }
 
-@keyframes mIntroSceneReveal {
-  from { opacity: 0; transform: scale(1.035); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes mIntroBlackCurtain {
+  0%, 7% { opacity: 1; }
+  24%, 100% { opacity: 0; }
 }
 
-@keyframes mIntroDoorOpen {
-  0%, 18% { transform: perspective(1200px) rotateY(0deg) scaleX(1); }
-  100% { transform: perspective(1200px) rotateY(-83deg) scaleX(0.1); }
+@keyframes mIntroPortalDissolve {
+  0%, 88% { background-color: #020202; }
+  100% { background-color: rgba(2, 2, 2, 0); }
 }
 
-@keyframes mIntroLockRelease {
-  0%, 12% { opacity: 0; transform: translate3d(8px, 0, 0) scaleX(0.25); }
-  30%, 68% { opacity: 0.82; transform: translate3d(0, 0, 0) scaleX(1); }
-  100% { opacity: 0; transform: translate3d(-15px, 0, 0) scaleX(0.16); }
+@keyframes mIntroFilmJourney {
+  0%, 7% { opacity: 0; transform: translate3d(0, 0, 0) scale(1.025); }
+  20%, 76% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  91% { opacity: 1; transform: translate3d(0, -0.6%, 0) scale(1.15); }
+  100% { opacity: 0; transform: translate3d(0, -1.2%, 0) scale(1.32); }
 }
 
-@keyframes mIntroEdgeAwake {
-  0%, 18% { opacity: 0; }
-  50% { opacity: 0.5; }
-  100% { opacity: 0.88; }
+@keyframes mIntroWallAwake {
+  0%, 8% { opacity: 0.08; }
+  28%, 100% { opacity: 1; }
 }
 
-@keyframes mIntroFloorTravel {
-  0%, 30% { opacity: 0; transform: translate3d(-50%, 18px, 0) scaleY(0.18); }
-  78%, 100% { opacity: 0.58; transform: translate3d(-50%, 0, 0) scaleY(1); }
+@keyframes mIntroDoorLeftOpen {
+  0%, 18% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-101%, 0, 0); }
 }
 
-@keyframes mIntroEmblemReliefReveal {
-  0%, 20% { opacity: 0; transform: translate3d(0, 7px, 0); }
-  100% { opacity: 0.76; transform: translate3d(0, 2px, 0); }
+@keyframes mIntroDoorRightOpen {
+  0%, 18% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(101%, 0, 0); }
 }
 
-@keyframes mIntroEmblemIvoryReveal {
-  0%, 14% { opacity: 0; clip-path: inset(0 100% 0 0); }
+@keyframes mIntroUnlock {
+  0%, 12% { opacity: 0; transform: translate3d(-50%, 4px, 0) scaleX(0.12); }
+  38%, 70% { opacity: 0.9; transform: translate3d(-50%, 0, 0) scaleX(1); }
+  100% { opacity: 0; transform: translate3d(-50%, -3px, 0) scaleX(0.2); }
+}
+
+@keyframes mIntroSeamRelease {
+  0%, 20% { opacity: 0; transform: scaleY(0.12); }
+  52% { opacity: 0.78; transform: scaleY(1); }
+  100% { opacity: 0.12; transform: scaleY(1); }
+}
+
+@keyframes mIntroEdgeReveal {
+  0%, 20% { opacity: 0; }
+  68%, 100% { opacity: 0.84; }
+}
+
+@keyframes mIntroFloorSpill {
+  0%, 28% { opacity: 0; transform: translate3d(-50%, 20px, 0) scaleY(0.08); }
+  76%, 100% { opacity: 0.5; transform: translate3d(-50%, 0, 0) scaleY(1); }
+}
+
+@keyframes mIntroMarkReveal {
+  0%, 18% { opacity: 0; transform: translate3d(0, 6px, 0); }
+  68%, 100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes mIntroMarkDepart {
+  0%, 26% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(0, -2px, 0) scale(1.035); }
+}
+
+@keyframes mIntroMarkReliefReveal {
+  0%, 24% { opacity: 0; transform: translate3d(0, 3px, 0); }
+  100% { opacity: 0.92; transform: translate3d(0, 2px, 0); }
+}
+
+@keyframes mIntroMarkFaceReveal {
+  0%, 12% { opacity: 0; clip-path: inset(0 0 100% 0); }
   100% { opacity: 1; clip-path: inset(0); }
 }
 
-@keyframes mIntroEmblemGoldReveal {
-  0%, 18% { opacity: 0; clip-path: inset(0 0 100% 0); }
-  100% { opacity: 1; clip-path: inset(0); }
-}
-
-@keyframes mIntroEmblemRakingLight {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); }
-  20% { opacity: 0.68; }
-  78% { opacity: 0.44; }
-  100% { opacity: 0; transform: translate3d(1900px, 0, 0); }
-}
-
-@keyframes mIntroEmblemSettle {
-  0%, 74% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-  100% { opacity: 0; transform: translate3d(0, -3px, 0) scale(0.985); }
-}
-
-@keyframes mIntroCameraPass {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(1.17); }
+@keyframes mIntroSkipReveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes mArchitecturalDrift {
@@ -185,177 +205,241 @@
     transform: scaleX(-1);
   }
 
-  /* Intro: one architectural threshold, used only once. */
+  /* Intro: an intro-only architectural film, independent from the site scenes. */
   .m-intro {
     position: fixed;
     z-index: 240;
     inset: 0;
     min-height: 100svh;
     overflow: hidden;
-    background: #070605;
+    background: #020202;
     color: var(--m-ink);
+    isolation: isolate;
+    animation: mIntroPortalDissolve 10s linear forwards;
   }
 
   .m-intro-black,
-  .m-intro-architecture {
+  .m-intro-film {
     position: absolute;
     inset: 0;
   }
 
   .m-intro-black {
-    background: #060504;
+    z-index: 3;
+    background: #020202;
+    animation: mIntroBlackCurtain 10s linear forwards;
   }
 
-  .m-intro-architecture {
+  .m-intro-film {
+    z-index: 2;
     opacity: 0;
-    animation:
-      mIntroSceneReveal 1.65s 0.38s var(--m-ease) forwards,
-      mIntroCameraPass 1.35s 6.15s var(--m-door-ease) forwards;
+    transform-origin: 50% 61%;
+    will-change: opacity, transform;
+    animation: mIntroFilmJourney 10s cubic-bezier(0.44, 0, 0.18, 1) forwards;
   }
 
-  .m-intro-image {
+  .m-intro-wall {
     position: absolute;
     inset: -1.5%;
     background: url("/architecture/mobile/intro-doorway.jpg") center / cover no-repeat;
+    opacity: 0.08;
+    animation: mIntroWallAwake 3s 0.2s cubic-bezier(0.32, 0, 0.16, 1) forwards;
   }
 
-  .m-intro-image::after {
+  .m-intro-wall::after {
     content: "";
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(180deg, rgba(4, 3, 2, 0.58), transparent 27%, transparent 71%, rgba(4, 3, 2, 0.36)),
-      radial-gradient(ellipse at 50% 56%, transparent 22%, rgba(3, 2, 2, 0.48) 84%);
+      linear-gradient(180deg, rgba(2, 2, 2, 0.72), rgba(2, 2, 2, 0.18) 39%, rgba(2, 2, 2, 0.08) 66%, rgba(2, 2, 2, 0.42)),
+      radial-gradient(ellipse at 50% 58%, transparent 17%, rgba(2, 2, 2, 0.45) 83%);
   }
 
-  .m-intro-frame {
+  .m-intro-threshold {
     position: absolute;
-    inset: 25.5% 17% 12.5%;
-    perspective: 1200px;
+    inset: 33.75% 17.1% 20.55%;
+    overflow: hidden;
+    background: #050403;
   }
 
-  .m-intro-interior {
+  .m-intro-chamber {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(102deg, transparent 0 44%, rgba(213, 160, 95, 0.075) 53%, transparent 64%),
-      linear-gradient(180deg, #080706, #0d0a07 65%, #171008);
-    box-shadow: inset 18px 0 28px rgba(0, 0, 0, 0.72), inset -10px 0 22px rgba(166, 111, 56, 0.06);
+      linear-gradient(104deg, transparent 0 42%, rgba(208, 153, 91, 0.08) 52%, transparent 64%),
+      linear-gradient(180deg, #040403, #090705 69%, #171008);
+    box-shadow: inset 20px 0 34px rgba(0, 0, 0, 0.78), inset -12px 0 26px rgba(143, 91, 43, 0.08);
   }
 
-  .m-intro-door {
+  .m-intro-door-system {
     position: absolute;
-    z-index: 4;
+    z-index: 5;
     inset: 0;
-    transform-origin: left center;
-    background:
-      linear-gradient(102deg, transparent 0 48%, rgba(190, 132, 70, 0.07) 51%, transparent 55%),
-      linear-gradient(90deg, #100e0b, #19140f 44%, #0b0907);
-    box-shadow: 12px 0 22px rgba(0, 0, 0, 0.76), inset -1px 0 rgba(205, 151, 89, 0.2);
-    animation: mIntroDoorOpen 2.55s 1.55s var(--m-door-ease) forwards;
+    overflow: hidden;
   }
 
-  .m-intro-lock {
+  .m-intro-door-leaf {
     position: absolute;
-    inset-block-start: 50%;
-    inset-inline-end: -1px;
-    width: 28px;
-    height: 1px;
-    transform-origin: right center;
-    background: #c49359;
-    box-shadow: -7px 0 0 rgba(232, 190, 130, 0.18);
+    inset-block: 0;
+    width: 50.25%;
+    will-change: transform;
+    background:
+      linear-gradient(98deg, transparent 0 45%, rgba(194, 139, 77, 0.055) 49%, transparent 54%),
+      linear-gradient(90deg, #0a0907, #17130f 48%, #080706);
+    box-shadow: inset 0 0 0 1px rgba(181, 129, 72, 0.07);
+  }
+
+  .m-intro-door-leaf::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0 18px, rgba(229, 183, 119, 0.018) 19px, transparent 20px);
+  }
+
+  .m-intro-door-leaf-left {
+    left: 0;
+    box-shadow: 12px 0 24px rgba(0, 0, 0, 0.72), inset -1px 0 rgba(198, 144, 82, 0.14);
+    animation: mIntroDoorLeftOpen 2.85s 2.75s var(--m-door-ease) forwards;
+  }
+
+  .m-intro-door-leaf-right {
+    right: 0;
+    box-shadow: -12px 0 24px rgba(0, 0, 0, 0.72), inset 1px 0 rgba(198, 144, 82, 0.14);
+    animation: mIntroDoorRightOpen 2.85s 2.75s var(--m-door-ease) forwards;
+  }
+
+  .m-intro-door-seam {
+    position: absolute;
+    z-index: 2;
+    inset-block: 9%;
+    left: calc(50% - 0.5px);
+    width: 1px;
+    transform-origin: center;
+    background: #c28b50;
     opacity: 0;
-    animation: mIntroLockRelease 1.35s 0.9s var(--m-ease) forwards;
+    animation: mIntroSeamRelease 1.65s 2.15s ease-out forwards;
+  }
+
+  .m-intro-lock-bolt {
+    position: absolute;
+    z-index: 3;
+    inset-block-start: 51%;
+    left: 50%;
+    width: 42px;
+    height: 1px;
+    transform-origin: center;
+    background: linear-gradient(90deg, transparent, #d0a168 18%, #a66d37 82%, transparent);
+    opacity: 0;
+    animation: mIntroUnlock 1.45s 1.85s var(--m-ease) forwards;
   }
 
   .m-intro-edge {
     position: absolute;
-    z-index: 5;
-    inset: -1.5%;
-    border: 1px solid rgba(224, 174, 105, 0.72);
-    box-shadow: inset 1px 0 rgba(245, 211, 158, 0.34), inset -2px 0 rgba(145, 91, 42, 0.18);
+    z-index: 6;
+    display: block;
+    background: linear-gradient(180deg, #8d592d, #e1b477 46%, #8f5a2d);
     opacity: 0;
-    animation: mIntroEdgeAwake 2.8s 0.78s ease-out forwards;
+    animation: mIntroEdgeReveal 2.75s 1.5s ease-out forwards;
   }
 
-  .m-intro-floor {
+  .m-intro-edge-left,
+  .m-intro-edge-right {
+    inset-block: 0;
+    width: 1px;
+  }
+
+  .m-intro-edge-left { left: 0; }
+  .m-intro-edge-right { right: 0; }
+
+  .m-intro-edge-top {
+    inset-block-start: 0;
+    inset-inline: 0;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(90deg, #86542b, #e0b273 50%, #86542b);
+  }
+
+  .m-intro-floor-light {
+    position: absolute;
+    z-index: 4;
+    inset-block-start: 78.8%;
+    left: 50%;
+    width: 54%;
+    height: 21%;
+    transform-origin: top center;
+    background: linear-gradient(180deg, rgba(202, 143, 78, 0.24), rgba(142, 88, 39, 0.07) 46%, transparent 90%);
+    clip-path: polygon(34% 0, 66% 0, 100% 100%, 0 100%);
+    opacity: 0;
+    animation: mIntroFloorSpill 2.65s 3.15s var(--m-ease) forwards;
+  }
+
+  .m-intro-mark-stage {
     position: absolute;
     z-index: 3;
-    inset-block-start: 96%;
-    inset-inline-start: 50%;
-    width: 140%;
-    height: 42%;
-    transform-origin: top center;
-    background: linear-gradient(180deg, rgba(215, 158, 92, 0.32), rgba(173, 111, 55, 0.1) 40%, transparent 80%);
-    clip-path: polygon(27% 0, 73% 0, 100% 100%, 0 100%);
-    opacity: 0;
-    animation: mIntroFloorTravel 2.55s 1.85s var(--m-ease) forwards;
-  }
-
-  .m-intro-emblem-stage {
-    position: absolute;
-    z-index: 2;
-    inset: 7% 10% 8%;
+    inset: 10% 7% 8%;
     display: grid;
     place-items: center;
-    animation: mIntroEmblemSettle 1.25s 6.05s var(--m-ease) forwards;
+    opacity: 0;
+    animation:
+      mIntroMarkReveal 1.85s 4.25s var(--m-ease) forwards,
+      mIntroMarkDepart 1.55s 7.85s cubic-bezier(0.44, 0, 0.3, 1) forwards;
   }
 
-  .m-intro-emblem {
+  .m-intro-mark {
     display: block;
-    width: min(47vw, 198px);
+    width: min(39vw, 162px);
     height: auto;
     overflow: visible;
     shape-rendering: geometricPrecision;
   }
 
-  .m-intro-emblem-relief {
-    fill: #3a2819;
+  .m-intro-mark-relief {
+    fill: #2c1d12;
     opacity: 0;
-    transform: translate3d(0, 7px, 0);
-    animation: mIntroEmblemReliefReveal 1.8s 2.95s var(--m-ease) forwards;
+    transform: translate3d(0, 3px, 0);
+    animation: mIntroMarkReliefReveal 1.8s 4.25s var(--m-ease) forwards;
   }
 
-  .m-intro-emblem-ivory {
-    fill: url("#mobile-intro-ivory-material");
-    opacity: 0;
-    clip-path: inset(0 100% 0 0);
-    animation: mIntroEmblemIvoryReveal 1.75s 3.32s var(--m-ease) forwards;
-  }
-
-  .m-intro-emblem-gold {
-    fill: url("#mobile-intro-gold-material");
+  .m-intro-mark-stone,
+  .m-intro-mark-bronze {
     opacity: 0;
     clip-path: inset(0 0 100% 0);
-    animation: mIntroEmblemGoldReveal 1.85s 3.65s var(--m-ease) forwards;
+    animation: mIntroMarkFaceReveal 1.9s 4.55s var(--m-ease) forwards;
   }
 
-  .m-intro-emblem-raking-light {
-    opacity: 0;
-    animation: mIntroEmblemRakingLight 1.85s 4.05s cubic-bezier(0.42, 0, 0.28, 1) forwards;
+  .m-intro-mark-stone { fill: url("#intro-limestone"); }
+  .m-intro-mark-bronze { fill: url("#intro-bronze"); }
+
+  .m-intro-vignette {
+    position: absolute;
+    z-index: 7;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 60%, transparent 20%, rgba(2, 2, 2, 0.54) 91%);
   }
 
   .m-intro-skip {
     position: absolute;
-    z-index: 8;
-    inset-inline-start: 50%;
-    inset-block-end: calc(18px + env(safe-area-inset-bottom));
+    z-index: 9;
+    left: 50%;
+    inset-block-end: calc(12px + env(safe-area-inset-bottom));
     transform: translateX(-50%);
-    min-width: 174px;
-    min-height: 44px;
+    min-width: 112px;
+    min-height: 36px;
     border: 0;
-    border-block-end: 1px solid rgba(201, 154, 95, 0.62);
     background: transparent;
-    color: rgba(243, 233, 220, 0.78);
-    font-size: 0.65rem;
+    color: rgba(243, 233, 220, 0.56);
+    font-size: 0.54rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+    opacity: 0;
+    animation: mIntroSkipReveal 0.8s 4.6s ease-out forwards;
   }
 
   [dir="rtl"] .m-intro-skip {
     font-family: var(--font-arabic);
-    font-size: 0.84rem;
+    font-size: 0.72rem;
     font-weight: 500;
     letter-spacing: 0;
     text-transform: none;
@@ -1452,8 +1536,8 @@
     .m-header-brand > span { font-size: 0.57rem; }
     .m-header-progress { display: none; }
     .m-menu-button { width: 38px; height: 38px; }
-    .m-intro-frame { inset-block-start: 23%; inset-block-end: 11%; }
-    .m-intro-emblem { width: min(44vw, 164px); }
+    .m-intro-threshold { inset-block-start: 33.75%; inset-block-end: 20.55%; }
+    .m-intro-mark { width: min(36vw, 142px); }
     .m-intro-skip { inset-block-end: calc(8px + env(safe-area-inset-bottom)); }
 
     .m-gate-copy,
@@ -1499,8 +1583,8 @@
     .m-header-brand img { width: 25px; height: 30px; }
     .m-header-progress { display: none; }
     .m-menu-button { width: 38px; height: 38px; }
-    .m-intro-frame { inset: 14% 30% 9%; }
-    .m-intro-emblem { width: min(26vw, 150px); }
+    .m-intro-threshold { inset: 33.75% 29.5% 20.55%; }
+    .m-intro-mark { width: min(20vw, 132px); }
     .m-intro-skip { inset-block-end: calc(7px + env(safe-area-inset-bottom)); }
 
     .m-gate-copy,
@@ -1536,35 +1620,42 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .m-intro-architecture,
-    .m-intro-door,
-    .m-intro-lock,
+    .m-intro-black,
+    .m-intro-film,
+    .m-intro-wall,
+    .m-intro-door-leaf,
+    .m-intro-door-seam,
+    .m-intro-lock-bolt,
     .m-intro-edge,
-    .m-intro-floor,
-    .m-intro-emblem-stage,
-    .m-intro-emblem-relief,
-    .m-intro-emblem-ivory,
-    .m-intro-emblem-gold,
-    .m-intro-emblem-raking-light,
+    .m-intro-floor-light,
+    .m-intro-mark-stage,
+    .m-intro-mark-relief,
+    .m-intro-mark-stone,
+    .m-intro-mark-bronze,
+    .m-intro-skip,
     .m-world-light,
     .m-world-reflection {
       animation: none !important;
     }
 
-    .m-intro-architecture,
+    .m-intro-film,
+    .m-intro-wall,
     .m-intro-edge,
-    .m-intro-emblem-stage {
+    .m-intro-mark-stage,
+    .m-intro-skip {
       opacity: 1;
       transform: none;
     }
 
-    .m-intro-door { transform: perspective(1200px) rotateY(-83deg) scaleX(0.1); }
-    .m-intro-floor { opacity: 0.58; transform: translate3d(-50%, 0, 0) scaleY(1); }
-    .m-intro-emblem-relief { opacity: 0.76; transform: translate3d(0, 2px, 0); }
-    .m-intro-emblem-ivory,
-    .m-intro-emblem-gold { opacity: 1; clip-path: inset(0); }
-    .m-intro-lock,
-    .m-intro-emblem-raking-light { opacity: 0; }
+    .m-intro-black { opacity: 0; }
+    .m-intro-door-leaf-left { transform: translate3d(-101%, 0, 0); }
+    .m-intro-door-leaf-right { transform: translate3d(101%, 0, 0); }
+    .m-intro-floor-light { opacity: 0.5; transform: translate3d(-50%, 0, 0) scaleY(1); }
+    .m-intro-mark-relief { opacity: 0.92; transform: translate3d(0, 2px, 0); }
+    .m-intro-mark-stone,
+    .m-intro-mark-bronze { opacity: 1; clip-path: inset(0); }
+    .m-intro-door-seam,
+    .m-intro-lock-bolt { opacity: 0; }
 
     .m-scene-rail { scroll-behavior: auto; }
     .m-gate-camera,
