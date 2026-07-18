@@ -19,8 +19,12 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: ["BAMAROUF STUDIO", "Tarik Bamarouf", "noor", "Khaled Bamarouf"],
     alternates: { canonical: "/" },
     icons: {
-      icon: [{ url: "/favicon.png", type: "image/png" }],
-      apple: [{ url: "/icon.png", type: "image/png" }],
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon.png", type: "image/png", sizes: "64x64" },
+      ],
+      shortcut: [{ url: "/favicon.ico" }],
+      apple: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
     },
     openGraph: {
       type: "website",

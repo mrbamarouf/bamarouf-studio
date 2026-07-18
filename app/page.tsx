@@ -37,7 +37,7 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
   useEffect(() => {
     document.body.classList.add("intro-open");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reducedMotion ? 80 : 5600);
+    const timer = window.setTimeout(onComplete, reducedMotion ? 900 : 8600);
     return () => {
       window.clearTimeout(timer);
       document.body.classList.remove("intro-open");
@@ -46,12 +46,23 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
 
   return (
     <div className="intro" role="dialog" aria-modal="true" aria-label={t.intro.label}>
+      <div className="intro-blackout" aria-hidden="true" />
       <div className="intro-scene" aria-hidden="true">
         <Image className="intro-scene-image" src={scenes.intro} alt="" fill priority sizes="100vw" />
         <div className="intro-nightfall" />
         <div className="intro-monument">
           <div className="intro-sanctum">
-            <Image src="/brand/logo-full.png" alt="" width={792} height={1048} priority />
+            <div className="intro-emblem">
+              <Image
+                className="intro-emblem-art"
+                src="/brand/logo-intro-identity.png"
+                alt=""
+                width={1188}
+                height={1572}
+                priority
+                unoptimized
+              />
+            </div>
           </div>
           <div className="intro-door-leaf" />
           <div className="intro-edge-light" />
@@ -69,7 +80,14 @@ function Header({ language, setLanguage }: { language: Language; setLanguage: (l
   return (
     <header className="site-header">
       <a className="header-mark" href="#home" aria-label={t.nav.home}>
-        <Image src="/brand/logo-symbol.png" alt="" width={620} height={730} priority />
+        <Image
+          src="/brand/logo-header-mark.png"
+          alt=""
+          width={320}
+          height={377}
+          priority
+          unoptimized
+        />
         <span className="header-wordmark">BAMAROUF <small>STUDIO</small></span>
       </a>
 
@@ -98,11 +116,15 @@ function Hero({ language, onEnter }: { language: Language; onEnter: EnterDestina
     const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
     event.currentTarget.style.setProperty("--pointer-x", x.toFixed(3));
     event.currentTarget.style.setProperty("--pointer-y", y.toFixed(3));
+    event.currentTarget.style.setProperty("--hero-camera-x", `${(-x * 3.5).toFixed(2)}px`);
+    event.currentTarget.style.setProperty("--hero-camera-y", `${(-y * 2.25).toFixed(2)}px`);
   };
 
   const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
     event.currentTarget.style.setProperty("--pointer-x", "0");
     event.currentTarget.style.setProperty("--pointer-y", "0");
+    event.currentTarget.style.setProperty("--hero-camera-x", "0px");
+    event.currentTarget.style.setProperty("--hero-camera-y", "0px");
   };
 
   return (
@@ -362,7 +384,14 @@ function Footer({
   return (
     <footer className="site-footer section-shell">
       <div className="footer-brand">
-        <Image src="/brand/logo-full.png" alt="BAMAROUF STUDIO" width={792} height={1048} />
+        <Image
+          src="/brand/logo-footer-lockup.png"
+          alt="BAMAROUF STUDIO, بامعروف استديو"
+          width={950}
+          height={1257}
+          sizes="194px"
+          unoptimized
+        />
         <p>{t.footer.house}</p>
       </div>
       <nav className="footer-worlds" aria-label={t.worlds.title}>
@@ -407,34 +436,6 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
-    if (introVisible) return;
-    const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
-    let frame = 0;
-
-    const revealVisible = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        const revealLine = window.innerHeight * 0.9;
-        elements.forEach((element) => {
-          if (element.classList.contains("is-visible")) return;
-          const bounds = element.getBoundingClientRect();
-          if (bounds.top < revealLine && bounds.bottom > 0) element.classList.add("is-visible");
-        });
-        frame = 0;
-      });
-    };
-
-    revealVisible();
-    window.addEventListener("scroll", revealVisible, { passive: true });
-    window.addEventListener("resize", revealVisible);
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", revealVisible);
-      window.removeEventListener("resize", revealVisible);
-    };
-  }, [introVisible, language]);
-
-  useEffect(() => {
     const sceneElements = Array.from(document.querySelectorAll<HTMLElement>(".hero, .cinematic-scene"));
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -444,6 +445,42 @@ export default function Home() {
     sceneElements.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (introVisible || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const sceneElements = Array.from(document.querySelectorAll<HTMLElement>(".hero, .cinematic-scene"));
+    let frame = 0;
+
+    const updateCamera = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        const viewportCenter = window.innerHeight / 2;
+
+        sceneElements.forEach((scene) => {
+          const bounds = scene.getBoundingClientRect();
+          if (bounds.bottom < -window.innerHeight || bounds.top > window.innerHeight * 2) return;
+
+          const sceneCenter = bounds.top + bounds.height / 2;
+          const travel = Math.max(-1, Math.min(1, (sceneCenter - viewportCenter) / (bounds.height + window.innerHeight)));
+          scene.style.setProperty("--scene-camera-y", `${(travel * 6).toFixed(2)}px`);
+          scene.style.setProperty("--scene-light-y", `${(travel * -10).toFixed(2)}px`);
+        });
+
+        frame = 0;
+      });
+    };
+
+    updateCamera();
+    window.addEventListener("scroll", updateCamera, { passive: true });
+    window.addEventListener("resize", updateCamera);
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateCamera);
+      window.removeEventListener("resize", updateCamera);
+    };
+  }, [introVisible]);
 
   useEffect(() => () => {
     if (navigationTimer.current) window.clearTimeout(navigationTimer.current);
