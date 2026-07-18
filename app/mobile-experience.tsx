@@ -15,7 +15,7 @@ import {
   mobileDestinations,
   type MobileDestination,
 } from "./mobile-content";
-import { MobileIntroMark } from "./mobile-intro-mark";
+import { MobileArchitecturalIntro } from "./mobile-architectural-intro";
 
 type SetLanguage = (language: Language) => void;
 type EnterMobileDestination = (
@@ -45,62 +45,6 @@ function MobileArrow({ direction = "forward" }: { direction?: "forward" | "down"
     <span className={`m-arrow m-arrow-${direction}`} aria-hidden="true">
       {direction === "down" ? "↓" : "→"}
     </span>
-  );
-}
-
-function MobileIntro({
-  language,
-  active,
-  onComplete,
-}: {
-  language: Language;
-  active: boolean;
-  onComplete: () => void;
-}) {
-  const t = mobileContent[language];
-
-  useEffect(() => {
-    if (!active || !window.matchMedia(MOBILE_QUERY).matches) return;
-
-    document.body.classList.add("mobile-intro-open");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reducedMotion ? 1200 : 10000);
-
-    return () => {
-      window.clearTimeout(timer);
-      document.body.classList.remove("mobile-intro-open");
-    };
-  }, [active, onComplete]);
-
-  if (!active) return null;
-
-  return (
-    <div className="m-intro" role="dialog" aria-modal="true" aria-label={t.intro.label}>
-      <div className="m-intro-black" aria-hidden="true" />
-      <div className="m-intro-film" aria-hidden="true">
-        <div className="m-intro-wall" />
-        <div className="m-intro-threshold">
-          <div className="m-intro-chamber" />
-          <div className="m-intro-mark-stage">
-            <MobileIntroMark />
-          </div>
-          <div className="m-intro-door-system">
-            <span className="m-intro-door-leaf m-intro-door-leaf-left" />
-            <span className="m-intro-door-leaf m-intro-door-leaf-right" />
-            <span className="m-intro-door-seam" />
-            <span className="m-intro-lock-bolt" />
-          </div>
-          <span className="m-intro-edge m-intro-edge-left" />
-          <span className="m-intro-edge m-intro-edge-right" />
-          <span className="m-intro-edge m-intro-edge-top" />
-        </div>
-        <div className="m-intro-floor-light" />
-        <div className="m-intro-vignette" />
-      </div>
-      <button className="m-intro-skip" type="button" onClick={onComplete}>
-        {t.intro.skip}
-      </button>
-    </div>
   );
 }
 
@@ -651,7 +595,7 @@ export function MobileExperience({
   return (
     <div className="mobile-experience">
       <a className="m-skip-link" href="#mobile-gate">{t.skipContent}</a>
-      <MobileIntro language={language} active={introVisible} onComplete={finishIntro} />
+      <MobileArchitecturalIntro language={language} active={introVisible} onComplete={finishIntro} />
       <div className="m-site-shell" aria-hidden={introVisible || undefined} inert={introVisible}>
         <MobileHeader
           language={language}
