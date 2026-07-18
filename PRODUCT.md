@@ -27,7 +27,7 @@ Generic agency, portfolio, SaaS, startup, or corporate templates. No bright tech
 3. Let restraint carry confidence: short copy, deliberate spacing, and controlled motion.
 4. Use materials and light as meaning, not decoration.
 5. Give Arabic and English equal, intentionally composed experiences.
-6. Use the approved three-door architectural photograph as the visual source of truth for thresholds, materials, light, and spatial depth.
+6. Use the approved three-door photograph only in the hero. Treat the mood board as an architectural universe, then give every other scene a unique environment, camera angle, material focus, and light composition within that universe.
 
 ## Accessibility & Inclusion
 

@@ -12,7 +12,17 @@ import {
 import { content, destinations, type Language } from "./content";
 
 const LANG_KEY = "bamarouf-studio-language";
-const ARCHITECTURE_IMAGE = "/architecture/three-doors-house.png";
+
+const scenes = {
+  intro: "/architecture/scenes/intro-bronze.jpg",
+  hero: "/architecture/three-doors-house.png",
+  house: "/architecture/scenes/house-travertine.jpg",
+  tarik: "/architecture/scenes/tarik-black-stone.jpg",
+  nour: "/architecture/scenes/nour-gallery.jpg",
+  khaled: "/architecture/scenes/khaled-structure.jpg",
+  principles: "/architecture/scenes/principles-materials.jpg",
+  final: "/architecture/scenes/final-corridor.jpg",
+} as const;
 
 type Destination = (typeof destinations)[number];
 type EnterDestination = (event: MouseEvent<HTMLAnchorElement>, destination: Destination) => void;
@@ -37,14 +47,7 @@ function Intro({ onComplete, language }: { onComplete: () => void; language: Lan
   return (
     <div className="intro" role="dialog" aria-modal="true" aria-label={t.intro.label}>
       <div className="intro-scene" aria-hidden="true">
-        <Image
-          className="intro-scene-image"
-          src={ARCHITECTURE_IMAGE}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-        />
+        <Image className="intro-scene-image" src={scenes.intro} alt="" fill priority sizes="100vw" />
         <div className="intro-nightfall" />
         <div className="intro-monument">
           <div className="intro-sanctum">
@@ -101,7 +104,7 @@ function Hero({ language, onEnter }: { language: Language; onEnter: EnterDestina
     <section id="home" className="hero" onPointerMove={handlePointerMove}>
       <Image
         className="hero-photo"
-        src={ARCHITECTURE_IMAGE}
+        src={scenes.hero}
         alt="Three monumental illuminated doorways for Tarik, Nour, and Khaled"
         fill
         priority
@@ -141,25 +144,19 @@ function Hero({ language, onEnter }: { language: Language; onEnter: EnterDestina
   );
 }
 
-function HouseSection({ language }: { language: Language }) {
+function HouseScene({ language }: { language: Language }) {
   const t = content[language];
   return (
-    <section id="house" className="house-section">
-      <div className="house-image" data-reveal>
-        <Image
-          src={ARCHITECTURE_IMAGE}
-          alt="Warm stone threshold inside the Bamarouf house"
-          fill
-          sizes="62vw"
-        />
-        <div className="house-image-caption">
-          <span>01</span>
-          <p>{t.house.caption}</p>
-        </div>
-      </div>
-
-      <div className="house-copy" data-reveal>
-        <p className="section-number">THE HOUSE</p>
+    <section id="house" className="house-scene cinematic-scene">
+      <Image
+        className="scene-image"
+        src={scenes.house}
+        alt="A travertine interior corridor with bronze light inside the Bamarouf house"
+        fill
+        sizes="100vw"
+      />
+      <div className="house-scene-shade" aria-hidden="true" />
+      <div className="house-scene-copy" data-reveal>
         <h2>{t.house.title}</h2>
         <div className="house-paragraphs">
           {t.house.copy.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
@@ -168,11 +165,12 @@ function HouseSection({ language }: { language: Language }) {
           {t.house.materials.map((material) => <span key={material}>{material}</span>)}
         </div>
       </div>
+      <p className="scene-whisper">{t.house.caption}</p>
     </section>
   );
 }
 
-function WorldDoor({
+function WorldScene({
   destination,
   language,
   index,
@@ -184,66 +182,65 @@ function WorldDoor({
   onEnter: EnterDestination;
 }) {
   const t = content[language];
+  const localized = destination[language];
+  const image = scenes[destination.id];
+
   return (
-    <a
-      className={`world-door world-door-${destination.id}`}
-      href={destination.href}
-      onClick={(event) => onEnter(event, destination)}
-      data-reveal
-    >
+    <article className={`world-scene world-scene-${destination.id} cinematic-scene`}>
       <Image
-        src={ARCHITECTURE_IMAGE}
-        alt={`${destination.name} — ${destination[language].discipline}`}
+        className="scene-image world-scene-image"
+        src={image}
+        alt={`${destination.name}, ${localized.discipline}, architectural environment`}
         fill
-        sizes="34vw"
+        sizes="100vw"
       />
-      <span className="world-door-shade" aria-hidden="true" />
-      <span className="world-door-index">0{index + 1}</span>
-      <span className="world-door-copy">
-        <small>{destination.firstName}</small>
-        <strong>{destination.name}</strong>
-        <em>{destination[language].discipline}</em>
-        <span>{t.worlds.enter}<Arrow rtl={language === "ar"} /></span>
-      </span>
-    </a>
+      <div className="world-scene-shade" aria-hidden="true" />
+
+      {index === 0 && (
+        <div className="worlds-introduction" data-reveal>
+          <h2 id="three-worlds-title">{t.worlds.title}</h2>
+          <p>{t.worlds.copy}</p>
+        </div>
+      )}
+
+      <div className="world-scene-copy" data-reveal>
+        <span className="world-scene-count">0{index + 1}</span>
+        <p>{destination.firstName}</p>
+        <h3>{destination.name}</h3>
+        <strong>{localized.discipline}</strong>
+        <em>{localized.description}</em>
+        <a href={destination.href} onClick={(event) => onEnter(event, destination)}>
+          {t.worlds.enter}<Arrow rtl={language === "ar"} />
+        </a>
+      </div>
+    </article>
   );
 }
 
 function WorldsSection({ language, onEnter }: { language: Language; onEnter: EnterDestination }) {
-  const t = content[language];
   return (
-    <section id="three-worlds" className="worlds-section">
-      <div className="worlds-heading section-shell" data-reveal>
-        <div>
-          <p className="section-number">THREE WORLDS</p>
-          <h2>{t.worlds.title}</h2>
-        </div>
-        <p>{t.worlds.copy}</p>
-      </div>
-      <div className="worlds-architecture">
-        {destinations.map((destination, index) => (
-          <WorldDoor
-            destination={destination}
-            language={language}
-            index={index}
-            onEnter={onEnter}
-            key={destination.id}
-          />
-        ))}
-      </div>
+    <section id="three-worlds" className="worlds-film" aria-labelledby="three-worlds-title">
+      {destinations.map((destination, index) => (
+        <WorldScene
+          destination={destination}
+          language={language}
+          index={index}
+          onEnter={onEnter}
+          key={destination.id}
+        />
+      ))}
     </section>
   );
 }
 
-function PrinciplesSection({ language }: { language: Language }) {
+function PrinciplesScene({ language }: { language: Language }) {
   const t = content[language];
   return (
-    <section id="philosophy" className="principles-section">
-      <Image src={ARCHITECTURE_IMAGE} alt="" fill sizes="100vw" />
-      <div className="principles-shade" aria-hidden="true" />
+    <section id="philosophy" className="principles-scene cinematic-scene">
+      <Image className="scene-image" src={scenes.principles} alt="Bronze, travertine, and black stone architectural details" fill sizes="100vw" />
+      <div className="principles-scene-shade" aria-hidden="true" />
       <div className="principles-content section-shell">
         <div className="principles-intro" data-reveal>
-          <p className="section-number">HOUSE PRINCIPLES</p>
           <h2>{t.principles.title}</h2>
         </div>
         <div className="principles-list">
@@ -263,12 +260,11 @@ function PrinciplesSection({ language }: { language: Language }) {
 function FinalDestination({ language, onEnter }: { language: Language; onEnter: EnterDestination }) {
   const t = content[language];
   return (
-    <section className="final-destination">
-      <Image src={ARCHITECTURE_IMAGE} alt="" fill sizes="100vw" />
-      <div className="final-shade" aria-hidden="true" />
+    <section className="final-scene cinematic-scene">
+      <Image className="scene-image" src={scenes.final} alt="A long silent corridor leading to a distant light" fill sizes="100vw" />
+      <div className="final-scene-shade" aria-hidden="true" />
       <div className="final-content section-shell" data-reveal>
         <div className="final-statement">
-          <p className="section-number">ONE DESTINATION</p>
           <h2>{t.final.title}</h2>
           {t.final.copy.map((line) => <p key={line}>{line}</p>)}
         </div>
@@ -393,9 +389,9 @@ export default function Home() {
         <Header language={language} setLanguage={setLanguage} />
         <main>
           <Hero language={language} onEnter={enterDestination} />
-          <HouseSection language={language} />
+          <HouseScene language={language} />
           <WorldsSection language={language} onEnter={enterDestination} />
-          <PrinciplesSection language={language} />
+          <PrinciplesScene language={language} />
           <FinalDestination language={language} onEnter={enterDestination} />
         </main>
         <Footer language={language} setLanguage={setLanguage} onEnter={enterDestination} />
