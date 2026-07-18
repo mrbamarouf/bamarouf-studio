@@ -3,7 +3,7 @@
 The official architectural entrance to three independent specialist worlds:
 
 - [Tarik Bamarouf](https://tarikbamarouf.com/) — Digital Experiences
-- [Nour Bamarouf](https://noorbamarouf.com/) — Graphic Design
+- [noor](https://noorbamarouf.com/) — Graphic Design
 - [Khaled Bamarouf](https://www.khaledbamarouf.com/) — Systems Engineering
 
 ## Stack

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 
-const title = "BAMAROUF STUDIO | A House of Specialists";
-const description = "One house for three independent practices: digital experiences, graphic design, and systems engineering.";
+const title = "BAMAROUF STUDIO — A House of Specialists";
+const description = "A shared architectural address for three independent practices in digital experiences, graphic design, and systems engineering.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     applicationName: "BAMAROUF STUDIO",
-    keywords: ["BAMAROUF STUDIO", "Tarik Bamarouf", "Nour Bamarouf", "Khaled Bamarouf"],
+    keywords: ["BAMAROUF STUDIO", "Tarik Bamarouf", "noor", "Khaled Bamarouf"],
     alternates: { canonical: "/" },
     icons: {
       icon: [{ url: "/favicon.png", type: "image/png" }],

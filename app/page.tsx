@@ -18,7 +18,7 @@ const scenes = {
   hero: "/architecture/three-doors-house.png",
   house: "/architecture/scenes/house-travertine.jpg",
   tarik: "/architecture/scenes/tarik-black-stone.jpg",
-  nour: "/architecture/scenes/nour-gallery.jpg",
+  noor: "/architecture/scenes/noor-gallery.jpg",
   khaled: "/architecture/scenes/khaled-structure.jpg",
   principles: "/architecture/scenes/principles-materials.jpg",
   final: "/architecture/scenes/final-corridor.jpg",
@@ -177,11 +177,15 @@ function HouseScene({ language }: { language: Language }) {
         <div className="house-paragraphs">
           {t.house.copy.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
-        <div className="house-materials" aria-label={t.house.materialsLabel}>
-          {t.house.materials.map((material) => <span key={material}>{material}</span>)}
+        <div className="house-values" aria-label={t.house.valuesLabel}>
+          {t.house.values.map((value) => (
+            <article key={value.title}>
+              <h3>{value.title}</h3>
+              <p>{value.copy}</p>
+            </article>
+          ))}
         </div>
       </div>
-      <p className="scene-whisper">{t.house.caption}</p>
     </section>
   );
 }
@@ -201,16 +205,56 @@ function WorldScene({
   const localized = destination[language];
   const image = scenes[destination.id];
 
+  const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType === "touch") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+
+    event.currentTarget.dataset.worldActive = "true";
+    event.currentTarget.style.setProperty("--world-camera-x", `${(-x * 8).toFixed(2)}px`);
+    event.currentTarget.style.setProperty("--world-camera-y", `${(-y * 5).toFixed(2)}px`);
+    event.currentTarget.style.setProperty("--world-light-x", `${(x * 12).toFixed(2)}px`);
+    event.currentTarget.style.setProperty("--world-light-y", `${(y * 7).toFixed(2)}px`);
+    event.currentTarget.style.setProperty("--world-rotate-x", `${(y * 0.24).toFixed(3)}deg`);
+    event.currentTarget.style.setProperty("--world-rotate-y", `${(-x * 0.34).toFixed(3)}deg`);
+  };
+
+  const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
+    delete event.currentTarget.dataset.worldActive;
+    event.currentTarget.style.setProperty("--world-camera-x", "0px");
+    event.currentTarget.style.setProperty("--world-camera-y", "0px");
+    event.currentTarget.style.setProperty("--world-light-x", "0px");
+    event.currentTarget.style.setProperty("--world-light-y", "0px");
+    event.currentTarget.style.setProperty("--world-rotate-x", "0deg");
+    event.currentTarget.style.setProperty("--world-rotate-y", "0deg");
+  };
+
   return (
-    <article className={`world-scene world-scene-${destination.id} cinematic-scene`}>
-      <Image
-        className="scene-image world-scene-image"
-        src={image}
-        alt={localized.alt}
-        fill
-        sizes="100vw"
-      />
-      <div className="world-scene-shade" aria-hidden="true" />
+    <article
+      className={`world-scene world-scene-${destination.id} cinematic-scene`}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
+      <div className="world-camera">
+        <Image
+          className="scene-image world-scene-image"
+          src={image}
+          alt={localized.alt}
+          fill
+          sizes="100vw"
+        />
+      </div>
+      <div className="world-architecture" aria-hidden="true">
+        <span className="world-interior-light" />
+        <span className="world-volumetric-light" />
+        <span className="world-threshold-depth" />
+        <span className="world-floor-reflection" />
+        <span className="world-material-response" />
+        <span className="world-particles">
+          <i /><i /><i /><i /><i /><i /><i />
+        </span>
+      </div>
 
       {index === 0 && (
         <div className="worlds-introduction" data-reveal>
@@ -221,7 +265,7 @@ function WorldScene({
 
       <div className="world-scene-copy" data-reveal>
         <span className="world-scene-count">0{index + 1}</span>
-        <p>{destination.firstName}</p>
+        {destination.id !== "noor" && <p>{destination.firstName}</p>}
         <h3>{destination.name}</h3>
         <strong>{localized.discipline}</strong>
         <em>{localized.description}</em>
@@ -264,14 +308,8 @@ function PrinciplesScene({ language }: { language: Language }) {
         <div className="principles-intro" data-reveal>
           <h2>{t.principles.title}</h2>
         </div>
-        <div className="principles-list">
-          {t.principles.items.map((item, index) => (
-            <article className="principle" key={item.title} data-reveal>
-              <span>0{index + 1}</span>
-              <h3>{item.title}</h3>
-              <p>{item.copy}</p>
-            </article>
-          ))}
+        <div className="principles-editorial" data-reveal>
+          {t.principles.copy.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
       </div>
     </section>
@@ -424,12 +462,13 @@ export default function Home() {
   const enterDestination: EnterDestination = (event, destination) => {
     event.preventDefault();
     if (enteringRef.current) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     enteringRef.current = true;
     setEntering(destination.id);
     document.body.dataset.entering = destination.id;
     navigationTimer.current = window.setTimeout(() => {
       window.location.assign(destination.href);
-    }, 720);
+    }, reducedMotion ? 80 : 1120);
   };
 
   return (

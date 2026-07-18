@@ -10,7 +10,7 @@ Visitors arriving from the Bamarouf family network who need to understand the sh
 
 ## Product Purpose
 
-BAMAROUF STUDIO is the architectural entrance to three complete personal brands: Tarik Bamarouf for digital experiences, Nour Bamarouf for graphic design, and Khaled Bamarouf for systems engineering. Success means the visitor understands the philosophy of the house and confidently enters one specialist's existing website.
+BAMAROUF STUDIO is the architectural entrance to three complete personal brands: Tarik Bamarouf for digital experiences, noor for graphic design, and Khaled Bamarouf for systems engineering. Success means the visitor understands the philosophy of the house and confidently enters one specialist's existing website.
 
 ## Brand Personality
 
