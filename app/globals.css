@@ -3119,19 +3119,6 @@ a:focus-visible {
   mask-image: linear-gradient(180deg, transparent, #000 10% 86%, transparent);
 }
 
-.world-scene-noor .world-scene-copy,
-.world-scene-noor .world-scene-copy h3,
-.world-scene-noor .world-scene-copy > strong,
-.world-scene-noor .world-scene-copy > em {
-  color: #38231f;
-  text-shadow: 0 2px 18px rgb(255 244 236 / 0.24);
-}
-
-.world-scene-noor .world-scene-copy > p,
-.world-scene-noor .world-scene-count {
-  color: #71483d;
-}
-
 /* Khaled: vertical green light reveals structure and a distant passage. */
 .world-scene-khaled {
   --world-light: 159 184 137;
@@ -3228,13 +3215,13 @@ a:focus-visible {
 
 .world-scene-noor .threshold-link {
   border-color: rgb(78 48 41 / 0.44);
-  color: #38231f;
+  color: var(--warm-white);
 }
 
 .world-scene-noor .threshold-link:hover,
 .world-scene-noor .threshold-link:focus-visible {
   border-color: rgb(78 48 41 / 0.82) !important;
-  color: #261713;
+  color: var(--warm-white);
 }
 
 .world-scene-noor:is(:hover, :focus-within, [data-world-active="true"]) .world-volumetric-light {

@@ -1069,8 +1069,6 @@
   }
 
   .m-world-noor {
-    --world-ink: #2b1d18;
-    --world-muted: rgba(43, 29, 24, 0.76);
     --world-accent: #8c5d50;
   }
 
@@ -1216,6 +1214,11 @@
     text-transform: uppercase;
   }
 
+  .m-world-noor .m-world-index,
+  .m-world-noor .m-world-copy > strong {
+    color: var(--m-bronze);
+  }
+
   .m-world-copy > p {
     max-width: 31rem;
     margin: 0 0 15px;
@@ -1240,7 +1243,6 @@
     text-transform: uppercase;
   }
 
-  .m-world-noor .m-scene-advance { color: rgba(43, 29, 24, 0.64); }
   .m-world-noor .m-scene-advance::after { background: rgba(43, 29, 24, 0.28); }
 
   [dir="rtl"] .m-world h2 {
