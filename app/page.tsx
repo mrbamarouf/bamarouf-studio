@@ -11,11 +11,11 @@ import {
 } from "react";
 import { content, destinations, type Language } from "./content";
 import { MobileExperience } from "./mobile-experience";
+import { OfficialIntro } from "./official-intro";
 
 const LANG_KEY = "bamarouf-studio-language";
 
 const scenes = {
-  intro: "/architecture/scenes/intro-bronze.jpg",
   hero: "/architecture/three-doors-house.png",
   house: "/architecture/scenes/house-travertine.jpg",
   tarik: "/architecture/scenes/tarik-black-stone.jpg",
@@ -30,51 +30,6 @@ type EnterDestination = (event: MouseEvent<HTMLAnchorElement>, destination: Dest
 
 function Arrow({ rtl = false }: { rtl?: boolean }) {
   return <span className="arrow" aria-hidden="true">{rtl ? "←" : "→"}</span>;
-}
-
-function Intro({ onComplete, language }: { onComplete: () => void; language: Language }) {
-  const t = content[language];
-
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 767px)").matches) return;
-    document.body.classList.add("intro-open");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reducedMotion ? 900 : 8600);
-    return () => {
-      window.clearTimeout(timer);
-      document.body.classList.remove("intro-open");
-    };
-  }, [onComplete]);
-
-  return (
-    <div className="intro desktop-only" role="dialog" aria-modal="true" aria-label={t.intro.label}>
-      <div className="intro-blackout" aria-hidden="true" />
-      <div className="intro-scene" aria-hidden="true">
-        <Image className="intro-scene-image" src={scenes.intro} alt="" fill priority sizes="100vw" />
-        <div className="intro-nightfall" />
-        <div className="intro-monument">
-          <div className="intro-sanctum">
-            <div className="intro-emblem">
-              <Image
-                className="intro-emblem-art"
-                src="/brand/logo-intro-identity.png"
-                alt=""
-                width={1188}
-                height={1572}
-                priority
-                unoptimized
-              />
-            </div>
-          </div>
-          <div className="intro-door-leaf" />
-          <div className="intro-edge-light" />
-          <div className="intro-floor-light" />
-        </div>
-      </div>
-      <p className="intro-statement">{t.intro.statement}</p>
-      <button className="intro-skip" type="button" onClick={onComplete}>{t.intro.skip}</button>
-    </div>
-  );
 }
 
 function Header({ language, setLanguage }: { language: Language; setLanguage: (language: Language) => void }) {
@@ -497,7 +452,7 @@ export default function Home() {
 
   const finishIntro = useCallback(() => {
     setIntroVisible(false);
-    document.body.classList.remove("intro-open");
+    document.body.classList.remove("official-intro-open");
   }, []);
 
   const enterDestination: EnterDestination = (event, destination) => {
@@ -515,7 +470,11 @@ export default function Home() {
   return (
     <>
       <a className="skip-link desktop-only" href="#house">{content[language].skipContent}</a>
-      {introVisible && <Intro language={language} onComplete={finishIntro} />}
+      <OfficialIntro
+        active={introVisible}
+        label={content[language].intro.label}
+        onComplete={finishIntro}
+      />
       <div
         aria-hidden={introVisible || undefined}
         className="site-shell desktop-only"
@@ -532,7 +491,11 @@ export default function Home() {
         </main>
         <Footer language={language} setLanguage={setLanguage} onEnter={enterDestination} />
       </div>
-      <MobileExperience language={language} setLanguage={setLanguage} />
+      <MobileExperience
+        language={language}
+        setLanguage={setLanguage}
+        introActive={introVisible}
+      />
     </>
   );
 }

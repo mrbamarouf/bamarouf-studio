@@ -15,7 +15,6 @@ import {
   mobileDestinations,
   type MobileDestination,
 } from "./mobile-content";
-import { MobileArchitecturalIntro } from "./mobile-architectural-intro";
 
 type SetLanguage = (language: Language) => void;
 type EnterMobileDestination = (
@@ -528,11 +527,12 @@ function MobileFooterScene({
 export function MobileExperience({
   language,
   setLanguage,
+  introActive,
 }: {
   language: Language;
   setLanguage: SetLanguage;
+  introActive: boolean;
 }) {
-  const [introVisible, setIntroVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeScene, setActiveScene] = useState<string>(MOBILE_SCENES[0]);
   const [entering, setEntering] = useState<string | null>(null);
@@ -540,11 +540,6 @@ export function MobileExperience({
   const navigationTimer = useRef<number | null>(null);
   const enteringRef = useRef(false);
   const t = mobileContent[language];
-
-  const finishIntro = useCallback(() => {
-    setIntroVisible(false);
-    document.body.classList.remove("mobile-intro-open");
-  }, []);
 
   const goToScene = useCallback((scene: string) => {
     const target = document.getElementById(scene);
@@ -575,7 +570,7 @@ export function MobileExperience({
 
   useEffect(() => () => {
     if (navigationTimer.current) window.clearTimeout(navigationTimer.current);
-    document.body.classList.remove("mobile-intro-open", "mobile-menu-open");
+    document.body.classList.remove("mobile-menu-open");
     delete document.body.dataset.mobileEntering;
   }, []);
 
@@ -595,8 +590,7 @@ export function MobileExperience({
   return (
     <div className="mobile-experience">
       <a className="m-skip-link" href="#mobile-gate">{t.skipContent}</a>
-      <MobileArchitecturalIntro language={language} active={introVisible} onComplete={finishIntro} />
-      <div className="m-site-shell" aria-hidden={introVisible || undefined} inert={introVisible}>
+      <div className="m-site-shell" aria-hidden={introActive || undefined} inert={introActive}>
         <MobileHeader
           language={language}
           setLanguage={setLanguage}
