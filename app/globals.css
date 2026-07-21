@@ -1257,6 +1257,7 @@ a:hover .arrow {
 .footer-meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   padding-top: 26px;
@@ -1274,6 +1275,46 @@ a:hover .arrow {
   cursor: pointer;
   font-size: inherit;
   letter-spacing: inherit;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-link {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(200, 167, 121, 0.3);
+  border-radius: 50%;
+  color: rgba(243, 237, 228, 0.66);
+  transition:
+    border-color 220ms ease,
+    color 220ms ease,
+    background-color 220ms ease,
+    transform 220ms ease;
+}
+
+.social-link svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+.footer-socials {
+  margin-inline: auto;
+}
+
+.footer-socials .social-link:hover,
+.footer-socials .social-link:focus-visible {
+  border-color: rgba(239, 208, 165, 0.62);
+  background: rgba(239, 208, 165, 0.055);
+  color: #efd0a5;
+  transform: translateY(-1px);
 }
 
 /* Same-tab destination transitions are defined with the living-world system. */

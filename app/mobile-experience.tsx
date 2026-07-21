@@ -15,6 +15,7 @@ import {
   mobileDestinations,
   type MobileDestination,
 } from "./mobile-content";
+import { SocialLinks } from "./social-links";
 
 type SetLanguage = (language: Language) => void;
 type EnterMobileDestination = (
@@ -219,6 +220,14 @@ function MobileMenu({
           </button>
         ))}
       </nav>
+
+      <div className="m-menu-follow" aria-label="Follow BAMAROUF STUDIO">
+        <span>
+          FOLLOW
+          <small>تابعنا</small>
+        </span>
+        <SocialLinks className="m-menu-socials" />
+      </div>
 
       <div className="m-menu-language" aria-label={t.languageLabel}>
         <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")}>ENGLISH</button>
@@ -511,6 +520,7 @@ function MobileFooterScene({
           </a>
         ))}
       </nav>
+      <SocialLinks className="m-footer-socials" />
       <div className="m-footer-controls">
         <button type="button" onClick={() => setLanguage(language === "en" ? "ar" : "en")}>
           {language === "en" ? "العربية" : "ENGLISH"}

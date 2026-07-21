@@ -12,6 +12,7 @@ import {
 import { content, destinations, type Language } from "./content";
 import { MobileExperience } from "./mobile-experience";
 import { OfficialIntro } from "./official-intro";
+import { SocialLinks } from "./social-links";
 
 const LANG_KEY = "bamarouf-studio-language";
 
@@ -362,6 +363,7 @@ function Footer({
         <p>{t.footer.closing}</p>
         <div className="footer-meta">
           <span>© {new Date().getFullYear()} BAMAROUF STUDIO</span>
+          <SocialLinks className="footer-socials" />
           <button type="button" onClick={() => setLanguage(language === "en" ? "ar" : "en")}>
             {language === "en" ? "العربية" : "ENGLISH"}
           </button>
